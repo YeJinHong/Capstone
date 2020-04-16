@@ -5,7 +5,7 @@ import tkinter as tk
 import tkinter.messagebox as tmsg
 from tkinter import *
 import tkinter.filedialog as fdialog
-from test01 import MyApp
+from test01 import MyMainWindow
 import sys
 from PyQt5.QtWidgets import *
 
@@ -40,7 +40,7 @@ def ImgToTxt():
 # 메인 프로그램
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    ex = MyApp()
+    ex = MyMainWindow()
     sys.exit(app.exec_())
 # 메인 프로그램
 
