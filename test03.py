@@ -21,7 +21,8 @@ class MyWindow(QWidget):
         grid.addWidget(QTextEdit(), 2, 1)
 
         self.setWindowTitle('QGridLayout')
-        self.setGeometry(600, 600, 300, 200)
+        self.setGeometry(500, 500, 300, 200)
+
         self.show()
 
 
