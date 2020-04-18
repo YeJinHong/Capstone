@@ -22,6 +22,7 @@ class MyWindow(QWidget):
 
         self.setWindowTitle('QGridLayout')
         self.setGeometry(500, 500, 300, 200)
+
         self.show()
 
 
