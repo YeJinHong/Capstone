@@ -3,7 +3,7 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import Qt
 
-# ocr.py import
+# text_extract.py import
 import text_extract as txtract
 
 class MyMainWindow(QMainWindow):
@@ -85,12 +85,10 @@ class MyWidget(QWidget):
 
     # 텍스트 박스에 있는 내용을 비우고 다시 씀
     def WriteText(self):
-        #if self.filename.split(".")[-1] == "txt":
-            #texts = txtract.TexttoText(self.filename)
-        #else:
-            #texts = txtract.ImagetoText(self.filename)
-        self.text2.setPlainText(txtract.ImagetoText(self.filename))
-
+        # 파일로부터 텍스트를 읽어옴
+        text = txtract.ReturnText(self.filename)
+        # text2 창에 읽어온 텍스트를 출력
+        self.text2.setPlainText(text)
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
