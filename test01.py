@@ -3,10 +3,8 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import Qt
 
-# OCR을 위한 Tesseract import
-from PIL import Image
-from pytesseract import *
-
+# ocr.py import
+import text_extract as txtract
 
 class MyMainWindow(QMainWindow):
 
@@ -62,7 +60,7 @@ class MyWidget(QWidget):
         self.btn1.clicked.connect(self.FileOpen)
         # 버튼 - 파일 변환창
         self.btn2 = QPushButton('파일 변환', self)
-        self.btn2.clicked.connect(self.FileTrans)
+        self.btn2.clicked.connect(self.WriteText)
         # 텍스트 출력창
         self.text1 = QTextEdit()
         self.text2 = QTextEdit()
@@ -85,14 +83,13 @@ class MyWidget(QWidget):
         self.filename = fname[0]
         self.text1.setPlainText('파일이 입력 되었습니다. :\n'+self.filename)
 
-    # 이미지 -> 텍스트 변환 메소드(Tesseract)
-    def FileTrans(self):
-        # 파일명의 이미지 불러오기
-        image = Image.open(self.filename)
-        # 텍스트 추출(한글+영어)
-        text = image_to_string(image, lang="kor+eng")
-        # 텍스트 박스에 있는 내용을 비우고 다시 씀
-        self.text2.setPlainText(text)
+    # 텍스트 박스에 있는 내용을 비우고 다시 씀
+    def WriteText(self):
+        #if self.filename.split(".")[-1] == "txt":
+            #texts = txtract.TexttoText(self.filename)
+        #else:
+            #texts = txtract.ImagetoText(self.filename)
+        self.text2.setPlainText(txtract.ImagetoText(self.filename))
 
 
 if __name__ == '__main__':
