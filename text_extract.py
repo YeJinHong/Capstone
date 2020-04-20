@@ -1,7 +1,7 @@
-from pytesseract import *
-import cv2
-import docx2txt
-import slate3k
+from pytesseract import * # pip install pytesseract
+import cv2 # pip install opencv
+import docx2txt # pip install docx2txt
+import slate3k # pip install slate3k
 # import olefile
 
 # 확장자별로 이미지를 불러오는 방식을 다르게 함
