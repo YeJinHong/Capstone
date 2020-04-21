@@ -1,8 +1,11 @@
-from pytesseract import * # pip install pytesseract
-import cv2 # pip install opencv
-import docx2txt # pip install docx2txt
-import slate3k # pip install slate3k
-# import olefile
+# test_extract.py
+
+from pytesseract import *  # pip install pytesseract
+import cv2  # pip install opencv
+import docx2txt  # pip install docx2txt
+import pdfplumber  # pip install pdfplumber
+from pptx import Presentation  # pip install python-pptx
+import ole  #  pip install ole-py
 
 # 확장자별로 이미지를 불러오는 방식을 다르게 함
 
@@ -28,7 +31,7 @@ def ImagetoText(fileName):
 
 # txt 파일에만 사용되는 함수
 def TxttoText(fileName):
-    text = open(fileName, mode='rt', encoding="utf-8")
+    text = open(fileName, mode="rt", encoding="utf-8")
     extracted_text = text.read()
     if extracted_text == "":  # 빈 텍스트 파일일 경우
         extracted_text = "텍스트를 발견하지 못했습니다."
@@ -44,21 +47,33 @@ def DocxtoText(fileName):
 
 # pdf 파일에만 사용되는 함수
 def PdftoText(fileName):
-    text = slate3k.PDF(open(fileName, 'rb'))
-    extracted_text = '\n'.join(text)
+    pdf = pdfplumber.open(fileName)
+    extracted_text = ""
+    for i in range(0, len(pdf.pages)):
+        text = pdf.pages[i].extract_text()
+        extracted_text += "".join(text) + "\n"
     if extracted_text == "":  # 빈 텍스트 파일일 경우
         extracted_text = "텍스트를 발견하지 못했습니다."
     return extracted_text
 
+# ppt, pptx 파일에만 사용되는 함수
+def PptxtoText(fileName):
+    text = Presentation(fileName)
+    extracted_text = ""
+    for slide in text.slides:
+        for shape in slide.shapes:
+            if not shape.has_text_frame:
+                continue
+            for paragraph in shape.text_frame.paragraphs:
+                extracted_text += "".join(paragraph.text)+"\n"
+
+    return extracted_text
+
 # hwp 파일에만 사용되는 함수 (미완성)
-""" def HwptoText(fileName):
-    hwp = olefile.OleFileIO(fileName)
-    encoded_text = hwp.openstream('PrvText').read()
-    decoded_text = encoded_text.decode('utf-16')
-    extracted_text = decoded_text
-    if extracted_text == "":  # 빈 텍스트 파일일 경우
-        extracted_text = "텍스트를 발견하지 못했습니다."
-    return extracted_text"""
+def HwptoText(fileName):
+    text = ole.open('test_hwp.hwp')
+    extracted_text = text.get_stream('PrvText').read().decode('utf-16le')
+    return extracted_text
 
 def ReturnText(fileName):  # switch 문이 없어서 우선 if-else로 작성
     filetype = fileName.split(".")[-1]
@@ -67,12 +82,14 @@ def ReturnText(fileName):  # switch 문이 없어서 우선 if-else로 작성
         text = ImagetoText(fileName)
     elif filetype == "txt":  # .txt 파일인 경우
         text = TxttoText(fileName)
-    elif filetype == "doc" or filetype == "docx":  # .doc, .docx 파일인 경우
+    elif filetype == "docx":  # .doc, .docx 파일인 경우
         text = DocxtoText(fileName)
     elif filetype == "pdf":   # .pdf 파일인 경우
         text = PdftoText(fileName)
-    # elif filetype == "hwp":  # .hwp 파일인 경우
-        # text = HwptoText(fileName)
+    elif filetype == "pptx":  # .ppt, .pptx 파일인 경우
+        text = PptxtoText(fileName)
+    elif filetype == "hwp":  # .hwp 파일인 경우
+        text = HwptoText(fileName)
     else:  # mp3, zip 등 지원하지 않는 확장자인 경우
         text = "변환할 수 없는 파일입니다.\n지원하는 파일 타입은 이미지 파일 또는 텍스트 파일입니다.\n다시 시도해 주십시오."
     return text
