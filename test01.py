@@ -4,7 +4,7 @@ from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import Qt
 
 # text_extract.py import
-import text_extract as txtract
+import text_extract as te
 
 class MyMainWindow(QMainWindow):
 
@@ -86,7 +86,7 @@ class MyWidget(QWidget):
     # 텍스트 박스에 있는 내용을 비우고 다시 씀
     def WriteText(self):
         # 파일로부터 텍스트를 읽어옴
-        text = txtract.ReturnText(self.filename)
+        text = te.ReturnText(self.filename)
         # text2 창에 읽어온 텍스트를 출력
         self.text2.setPlainText(text)
 
