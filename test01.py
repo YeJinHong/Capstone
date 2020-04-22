@@ -1,10 +1,11 @@
 import sys
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import QIcon
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, pyqtSlot
 
 # text_extract.py import
 import text_extract as te
+
 
 class MyMainWindow(QMainWindow):
 
@@ -17,7 +18,6 @@ class MyMainWindow(QMainWindow):
         self.components()
         self.setWindowTitle('Aeye')
         self.setWindowIcon(QIcon('Aeyeicon.png'))
-        # self.setGeometry(300, 300, 300, 200)
         self.resize(1000, 800)
         # self.center()
         self.show()
@@ -40,8 +40,36 @@ class MyMainWindow(QMainWindow):
         filemenu.addAction(exitAction)
 
     def components(self):
-        wg = MyWidget()
-        self.setCentralWidget(wg)
+        #wg = MyWidget()
+        self.table_widget = MyTableWidget(self)
+        self.setCentralWidget(self.table_widget)
+
+
+class MyTableWidget(QWidget):
+    def __init__(self, parent):
+        super(QWidget, self).__init__(parent)
+        self.layout = QVBoxLayout(self);
+
+        # 탭 스크린 설정
+        self.tabs = QTabWidget()
+        self.tab1 = MyWidget()
+        self.tab2 = MyWidget()
+        self.tab2.label1.setText("텍스트 입력창")
+        self.tab2.label2.setText("점자 결과창")
+        self.tabs.resize(1000, 800)
+        self.tabs.addTab(self.tab1, "image -> text")
+        self.tabs.addTab(self.tab2, "text -> brail text")
+
+        self.layout.addWidget(self.tabs)
+        self.setLayout(self.layout)
+
+    """ #참조 블로그에 있던 메소드. 무슨 용도인지 모르겠음.
+    @pyqtSlot()
+    def on_click(self):
+        print("/n")
+        for currentQTableWidgetItem in self.tableWidget.selectedItems():
+            print(currentQTableWidgetItem.row(), currentQTableWidgetItem.column(), currentQTableWidgetItem.text())
+    """
 
 
 class MyWidget(QWidget):
@@ -51,10 +79,10 @@ class MyWidget(QWidget):
         super().__init__()
 
         # 라벨-파일 선택 안내문
-        self.label1 = QLabel('파일을 선택해주세요', self)
+        self.label1 = QLabel('파일 입력창', self)
         self.label1.setAlignment(Qt.AlignVCenter)
-        font1 = self.label1.font()
-        self.label1.setFont(font1)
+        self.label2 = QLabel('텍스트 결과창', self)
+        self.label1.setAlignment(Qt.AlignVCenter)
         # 버튼-파일 선택창
         self.btn1 = QPushButton('파일 열기...', self)
         self.btn1.clicked.connect(self.FileOpen)
@@ -71,7 +99,7 @@ class MyWidget(QWidget):
         grid.addWidget(self.text1, 1, 0)
         grid.addWidget(self.btn1, 2, 0)
         grid.addWidget(self.btn2, 1, 1)
-        grid.addWidget(QLabel('결과창'), 0, 2)
+        grid.addWidget(self.label2, 0, 2)
         grid.addWidget(self.text2, 1, 2)
 
         self.setGeometry(300, 100, 350, 150)
@@ -81,7 +109,7 @@ class MyWidget(QWidget):
     def FileOpen(self):
         fname = QFileDialog.getOpenFileName(self)
         self.filename = fname[0]
-        self.text1.setPlainText('파일이 입력 되었습니다. :\n'+self.filename)
+        self.text1.setPlainText('파일이 입력 되었습니다. :\n' + self.filename)
 
     # 텍스트 박스에 있는 내용을 비우고 다시 씀
     def WriteText(self):
@@ -89,6 +117,7 @@ class MyWidget(QWidget):
         text = te.ReturnText(self.filename)
         # text2 창에 읽어온 텍스트를 출력
         self.text2.setPlainText(text)
+
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
