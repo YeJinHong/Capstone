@@ -8,17 +8,26 @@ import text_extract as te
 
 
 class MyMainWindow(QMainWindow):
+    savestate = False  # save와 save as를 구별하기 위함
 
     def __init__(self):
         super().__init__()
         self.initUI()
 
     def initUI(self):
-        self.setexit()
         self.components()
         self.setWindowTitle('Aeye')
         self.setWindowIcon(QIcon('Aeyeicon.png'))
         self.resize(1000, 800)
+        self.statusBar()
+        menubar = self.menuBar()
+        menubar.setNativeMenuBar(False)
+        filemenu = menubar.addMenu('&File')
+        self.setnewfile(filemenu)
+        self.setfileopen(filemenu)
+        self.setfilesave(filemenu)
+        self.setfilesaveas(filemenu)
+        self.setexit(filemenu)
         # self.center()
         self.show()
 
@@ -28,19 +37,61 @@ class MyMainWindow(QMainWindow):
         qr.moveCenter(cp)
         self.move(qr.topLeft())
 
-    def setexit(self):
+    def setnewfile(self, menu):
+        newfileAction = QAction(QIcon('exit.png'), 'New File...', self)
+        newfileAction.setShortcut('Ctrl+N')
+        # newfileAction.triggered.connect()
+        menu.addAction(newfileAction)
+
+    def setfileopen(self, menu):
+        fileopenAction = QAction(QIcon('exit.png'), 'Open...', self)
+        fileopenAction.setShortcut('Ctrl+O')
+        fileopenAction.triggered.connect(self.fileopen)
+        menu.addAction(fileopenAction)
+
+    def fileopen(self):
+        fname = QFileDialog.getOpenFileName(self, self.tr("열기"), "",
+                                            self.tr("이미지 파일 (*.jpg *.jpeg *.bmp *.png);;"
+                                                    "문서 파일 (*.txt *.docx *.pdf *.hwp *.pptx)"))
+        MyWidget.filename = fname[0]
+        self.statusBar().showMessage("열림 : " + fname[0])
+
+    def setfilesave(self, menu):
+        filesaveAction = QAction(QIcon('exit.png'), 'Save...', self)
+        filesaveAction.setShortcut('Ctrl+S')
+        if self.savestate == True:
+            filesaveAction.triggered.connect(self.filesave)
+        else:
+            filesaveAction.triggered.connect(self.filesaveas)
+        menu.addAction(filesaveAction)
+
+    def setfilesaveas(self, menu):
+        filesaveasAction = QAction(QIcon('exit.png'), 'Save As...', self)
+        filesaveasAction.setShortcut('Ctrl+Shift+S')
+        filesaveasAction.triggered.connect(self.filesaveas)
+        menu.addAction(filesaveasAction)
+
+    def filesave(self):
+        self.statusBar().showMessage("저장됨")
+
+    def filesaveas(self):
+        fname = QFileDialog.getSaveFileName(self, self.tr("다른 이름으로 저장"), "", self.tr("점자 파일 (*.bbf *.brf)"))
+        if not fname:
+            return False
+        if fname.split(".")[-1] != "bbf":
+            fname += ".bbf"
+        self.statusBar().showMessage("저장됨 : " + fname[0])
+        self.savestate = True
+
+    def setexit(self, menu):
         exitAction = QAction(QIcon('exit.png'), 'Exit', self)
         exitAction.setShortcut('Ctrl+Q')
         exitAction.setStatusTip('Exit application')
         exitAction.triggered.connect(qApp.quit)
-        self.statusBar()
-        menubar = self.menuBar()
-        menubar.setNativeMenuBar(False)
-        filemenu = menubar.addMenu('&File')
-        filemenu.addAction(exitAction)
+        menu.addAction(exitAction)
 
     def components(self):
-        #wg = MyWidget()
+        # wg = MyWidget()
         self.table_widget = MyTableWidget(self)
         self.setCentralWidget(self.table_widget)
 
@@ -56,6 +107,7 @@ class MyTableWidget(QWidget):
         self.tab2 = MyWidget()
         self.tab2.label1.setText("텍스트 입력창")
         self.tab2.label2.setText("점자 결과창")
+        self.tab2.text1.setText(self.tab1.text2.toPlainText())
         self.tabs.resize(1000, 800)
         self.tabs.addTab(self.tab1, "image -> text")
         self.tabs.addTab(self.tab2, "text -> brail text")
@@ -83,9 +135,6 @@ class MyWidget(QWidget):
         self.label1.setAlignment(Qt.AlignVCenter)
         self.label2 = QLabel('텍스트 결과창', self)
         self.label1.setAlignment(Qt.AlignVCenter)
-        # 버튼-파일 선택창
-        self.btn1 = QPushButton('파일 열기...', self)
-        self.btn1.clicked.connect(self.FileOpen)
         # 버튼 - 파일 변환창
         self.btn2 = QPushButton('파일 변환', self)
         self.btn2.clicked.connect(self.WriteText)
@@ -97,7 +146,6 @@ class MyWidget(QWidget):
         self.setLayout(grid)
         grid.addWidget(self.label1, 0, 0)
         grid.addWidget(self.text1, 1, 0)
-        grid.addWidget(self.btn1, 2, 0)
         grid.addWidget(self.btn2, 1, 1)
         grid.addWidget(self.label2, 0, 2)
         grid.addWidget(self.text2, 1, 2)
@@ -106,17 +154,13 @@ class MyWidget(QWidget):
         self.setWindowTitle("QWidget")
         self.show()
 
-    def FileOpen(self):
-        fname = QFileDialog.getOpenFileName(self)
-        self.filename = fname[0]
-        self.text1.setPlainText('파일이 입력 되었습니다. :\n' + self.filename)
-
     # 텍스트 박스에 있는 내용을 비우고 다시 씀
     def WriteText(self):
         # 파일로부터 텍스트를 읽어옴
         text = te.ReturnText(self.filename)
         # text2 창에 읽어온 텍스트를 출력
         self.text2.setPlainText(text)
+        # MyTableWidget._init__.tab1.text2.setPlainText(text)
 
 
 if __name__ == '__main__':
