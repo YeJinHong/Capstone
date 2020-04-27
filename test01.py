@@ -8,26 +8,21 @@ import text_extract as te
 
 
 class MyMainWindow(QMainWindow):
-    savestate = False  # save와 save as를 구별하기 위함
+    savestate = False  # save와 save as를 구별하기 위함 (True:이미 저장된 파일이 있어 거기에 덮어씌우는 경우/False:처음 저장하는 경우)
+    global n
+    n = 1  # 새 창의 개수
 
     def __init__(self):
         super().__init__()
         self.initUI()
+        self.initmenu()
 
     def initUI(self):
         self.components()
-        self.setWindowTitle('Aeye')
+        self.setWindowTitle("새 파일 " + str(n) +' - Aeye')
         self.setWindowIcon(QIcon('Aeyeicon.png'))
         self.resize(1000, 800)
         self.statusBar()
-        menubar = self.menuBar()
-        menubar.setNativeMenuBar(False)
-        filemenu = menubar.addMenu('&File')
-        self.setnewfile(filemenu)
-        self.setfileopen(filemenu)
-        self.setfilesave(filemenu)
-        self.setfilesaveas(filemenu)
-        self.setexit(filemenu)
         # self.center()
         self.show()
 
@@ -37,39 +32,57 @@ class MyMainWindow(QMainWindow):
         qr.moveCenter(cp)
         self.move(qr.topLeft())
 
-    def setnewfile(self, menu):
-        newfileAction = QAction(QIcon('exit.png'), 'New File...', self)
+    def initmenu(self):
+        menubar = self.menuBar()
+        menubar.setNativeMenuBar(False)
+        filemenu = menubar.addMenu('&File')
+        # 새로 만들기
+        newfileAction = QAction(QIcon('exit.png'), '새로 만들기', self)
         newfileAction.setShortcut('Ctrl+N')
-        # newfileAction.triggered.connect()
-        menu.addAction(newfileAction)
-
-    def setfileopen(self, menu):
-        fileopenAction = QAction(QIcon('exit.png'), 'Open...', self)
+        newfileAction.setStatusTip('새 창을 엽니다.')
+        newfileAction.triggered.connect(self.newfile)
+        filemenu.addAction(newfileAction)
+        # 열기
+        fileopenAction = QAction(QIcon('exit.png'), '열기', self)
         fileopenAction.setShortcut('Ctrl+O')
+        fileopenAction.setStatusTip('내 PC에서 파일을 불러옵니다.')
         fileopenAction.triggered.connect(self.fileopen)
-        menu.addAction(fileopenAction)
+        filemenu.addAction(fileopenAction)
+        # 저장
+        filesaveAction = QAction(QIcon('exit.png'), '저장', self)
+        filesaveAction.setShortcut('Ctrl+S')
+        filesaveAction.setStatusTip('내 PC에 파일을 저장합니다.')
+        if self.savestate == True:
+            filesaveAction.triggered.connect(self.filesave)
+        else:
+            filesaveAction.triggered.connect(self.filesaveas)
+        filemenu.addAction(filesaveAction)
+        # 다른 이름으로 저장
+        filesaveasAction = QAction(QIcon('exit.png'), '다른 이름으로 저장', self)
+        filesaveasAction.setShortcut('Ctrl+Shift+S')
+        filesaveasAction.setStatusTip('내 PC에 파일을 저장합니다.')
+        filesaveasAction.triggered.connect(self.filesaveas)
+        filemenu.addAction(filesaveasAction)
+        # 종료
+        exitAction = QAction(QIcon('exit.png'), '종료', self)
+        exitAction.setShortcut('Ctrl+Q')
+        exitAction.setStatusTip('프로그램을 종료합니다.')
+        exitAction.triggered.connect(qApp.quit)
+        filemenu.addAction(exitAction)
+
+    def newfile(self):
+        global n
+        n += 1
+        self.newWindow = MyMainWindow()
+        self.newWindow.show()
 
     def fileopen(self):
         fname = QFileDialog.getOpenFileName(self, self.tr("열기"), "",
                                             self.tr("이미지 파일 (*.jpg *.jpeg *.bmp *.png);;"
                                                     "문서 파일 (*.txt *.docx *.pdf *.hwp *.pptx)"))
         MyWidget.filename = fname[0]
+        self.setWindowTitle(fname[0]+' - Aeye')
         self.statusBar().showMessage("열림 : " + fname[0])
-
-    def setfilesave(self, menu):
-        filesaveAction = QAction(QIcon('exit.png'), 'Save...', self)
-        filesaveAction.setShortcut('Ctrl+S')
-        if self.savestate == True:
-            filesaveAction.triggered.connect(self.filesave)
-        else:
-            filesaveAction.triggered.connect(self.filesaveas)
-        menu.addAction(filesaveAction)
-
-    def setfilesaveas(self, menu):
-        filesaveasAction = QAction(QIcon('exit.png'), 'Save As...', self)
-        filesaveasAction.setShortcut('Ctrl+Shift+S')
-        filesaveasAction.triggered.connect(self.filesaveas)
-        menu.addAction(filesaveasAction)
 
     def filesave(self):
         self.statusBar().showMessage("저장됨")
@@ -82,13 +95,6 @@ class MyMainWindow(QMainWindow):
             fname += ".bbf"
         self.statusBar().showMessage("저장됨 : " + fname[0])
         self.savestate = True
-
-    def setexit(self, menu):
-        exitAction = QAction(QIcon('exit.png'), 'Exit', self)
-        exitAction.setShortcut('Ctrl+Q')
-        exitAction.setStatusTip('Exit application')
-        exitAction.triggered.connect(qApp.quit)
-        menu.addAction(exitAction)
 
     def components(self):
         # wg = MyWidget()
