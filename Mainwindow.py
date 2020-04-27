@@ -2,6 +2,7 @@ import sys
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import Qt, pyqtSlot
+import TableWidget
 
 # text_extract.py import
 import text_extract as te
@@ -84,7 +85,7 @@ class MyMainWindow(QMainWindow):
         fname = QFileDialog.getOpenFileName(self, self.tr("열기"), "",
                                             self.tr("이미지 파일 (*.jpg *.jpeg *.bmp *.png);;"
                                                     "문서 파일 (*.txt *.docx *.pdf *.hwp *.pptx)"))
-        MyTableWidget.filename = fname[0]
+        TableWidget.MyTableWidget.filename = fname[0]
         if not fname[0] == "":
             self.setWindowTitle(fname[0]+' - Aeye')
             self.statusBar().showMessage("열림 : " + fname[0])
@@ -95,7 +96,7 @@ class MyMainWindow(QMainWindow):
         if not self.savestate:
             self.filesaveas()
         else:
-            fname = MyTableWidget.filename
+            fname = TableWidget.MyTableWidget.filename
             brailleText = "점자 변환 메소드가 구현되고 나면 점자로 변환된 내용을 여기로 불러와 유니코드로 작성합니다. 이건 저장"
             f = open(fname, 'wb')
             f.write(brailleText.encode())
@@ -112,7 +113,7 @@ class MyMainWindow(QMainWindow):
             filename = fname[0] + ".bbf"
         else:
             filename = fname[0]
-        MyTableWidget.filename = filename
+        TableWidget.MyTableWidget.filename = filename
         if not filename == "":
             f = open(filename, 'wb')
             f.write(brailleText.encode())
@@ -123,75 +124,9 @@ class MyMainWindow(QMainWindow):
 
     def components(self):
         # wg = MyWidget()
-        self.table_widget = MyTableWidget(self)
+        self.table_widget = TableWidget.MyTableWidget(self)
         self.setCentralWidget(self.table_widget)
 
-
-class MyTableWidget(QWidget):
-    filename = ""
-    def __init__(self, parent):
-        super(QWidget, self).__init__(parent)
-        self.layout = QVBoxLayout(self);
-
-        # 탭 스크린 설정
-        self.tabs = QTabWidget()
-        self.tab1 = MyWidget()
-        self.tab2 = MyWidget()
-        self.tab2.label1.setText("텍스트 입력창")
-        self.tab2.label2.setText("점자 결과창")
-        self.tabs.resize(1000, 800)
-        self.tabs.addTab(self.tab1, "image -> text")
-        self.tabs.addTab(self.tab2, "text -> brail text")
-        self.tab1.btn.clicked.connect(self.WriteText)
-        # self.tab2.btn.clicked.connect(텍스트->점자 메소드명)
-
-        self.layout.addWidget(self.tabs)
-        self.setLayout(self.layout)
-
-    # 이미지/문서 -> 텍스트 (tab1에서만 사용)
-    def WriteText(self):
-        # 파일로부터 텍스트를 읽어옴
-        text = te.ReturnText(self.filename)
-        # text2 창에 읽어온 텍스트를 출력
-        self.tab1.text2.setPlainText(text)
-        self.tab2.text1.setPlainText(text)
-
-    """ #참조 블로그에 있던 메소드. 무슨 용도인지 모르겠음.
-    @pyqtSlot()
-    def on_click(self):
-        print("/n")
-        for currentQTableWidgetItem in self.tableWidget.selectedItems():
-            print(currentQTableWidgetItem.row(), currentQTableWidgetItem.column(), currentQTableWidgetItem.text())
-    """
-
-
-class MyWidget(QWidget):
-
-    def __init__(self):
-        super().__init__()
-
-        # 라벨-파일 선택 안내문
-        self.label1 = QLabel('파일 입력창', self)
-        self.label1.setAlignment(Qt.AlignVCenter)
-        self.label2 = QLabel('텍스트 결과창', self)
-        self.label1.setAlignment(Qt.AlignVCenter)
-        # 버튼 - 파일 변환창
-        self.btn = QPushButton('파일 변환', self)
-        # 텍스트 출력창
-        self.text1 = QTextEdit()
-        self.text2 = QTextEdit()
-
-        grid = QGridLayout()
-        self.setLayout(grid)
-        grid.addWidget(self.label1, 0, 0)
-        grid.addWidget(self.text1, 1, 0)
-        grid.addWidget(self.btn, 1, 1)
-        grid.addWidget(self.label2, 0, 2)
-        grid.addWidget(self.text2, 1, 2)
-
-        self.setGeometry(300, 100, 350, 150)
-        self.setWindowTitle("QWidget")
-        self.show()
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
