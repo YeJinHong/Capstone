@@ -22,13 +22,12 @@ class MyTableWidget(QWidget):
         self.tab2 = MyWidget()
         self.tab2.label1.setText("텍스트 입력창")
         self.tab2.label2.setText("점자 결과창")
-        self.tab2.text1.setText(self.tab1.text2.toPlainText())
+        self.tab2.label_picture.setParent(None)
         self.tab2.grid.addWidget(self.tab1.text1, 1, 0)
         self.tabs.resize(1000, 800)
         self.tabs.addTab(self.tab1, "image -> text")
         self.tabs.addTab(self.tab2, "text -> brail text")
         self.tab1.btn.clicked.connect(self.WriteText)
-
         self.layout.addWidget(self.tabs)
         self.setLayout(self.layout)
 
@@ -38,7 +37,7 @@ class MyTableWidget(QWidget):
         text = te.ReturnText(self.filename)
         # text2 창에 읽어온 텍스트를 출력
         self.tab1.text2.setPlainText(text)
-        self.tab2.text1.setPlainText(text)
+        self.tab1.text1.setPlainText(text)
 
     def PreView(self):
         # QPixmap 객체 생성 후 이미지 파일 데이터 로드, Label을 이용하여 화면에 표시
