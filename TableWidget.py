@@ -35,7 +35,7 @@ class MyTableWidget(QWidget):
         # 파일로부터 텍스트를 읽어옴
         text = te.ReturnText(self.filename)
         # text2 창에 읽어온 텍스트를 출력
-        self.text2.setPlainText(text)
+        self.tab1.text2.setPlainText(text)
         self.tab2.text1.setPlainText(text)
 
 

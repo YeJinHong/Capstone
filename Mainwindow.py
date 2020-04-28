@@ -4,10 +4,6 @@ from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import Qt, pyqtSlot
 import TableWidget
 
-# text_extract.py import
-import text_extract as te
-
-
 class MyMainWindow(QMainWindow):
     # save와 save as를 구별하기 위함
     # (True:이미 저장된 파일이 있어 거기에 덮어씌우는 경우/False:처음 저장하는 거라 이름을 지정해줘야 하는 경우)
@@ -106,13 +102,13 @@ class MyMainWindow(QMainWindow):
 
     def filesaveas(self):  # 저장할 파일명을 정하는 다이얼로그가 뜨지 않고 지정된 파일에 덮어씌우는 저장
         brailleText = "점자 변환 메소드가 구현되고 나면 점자로 변환된 내용을 여기로 불러와 유니코드로 작성합니다. 이건 다른이름 저장"
-        # 다른 확장자를 적거나 확장자를 붙이지 않으면 .bbf가 기본값으로 붙고 .bbf, .brf를 확장자로 적으면 그 확장자로 붙음
         fname = QFileDialog.getSaveFileName(self, self.tr("다른 이름으로 저장"), "",
                                             self.tr("점자 파일 (*.bbf *.brf)"))
-        if fname[0].split(".")[-1] != "bbf" or fname[0].split(".")[-1] != "brf":
-            filename = fname[0] + ".bbf"
-        else:
+        # 다른 확장자를 적거나 확장자를 붙이지 않으면 .bbf가 기본값으로 붙고 .bbf, .brf를 확장자로 적으면 그 확장자로 붙음
+        if fname[0].split(".")[-1] == "" or fname[0].split(".")[-1] == "bbf" or fname[0].split(".")[-1] == "brf":
             filename = fname[0]
+        else:
+            filename = fname[0] + ".bbf"
         TableWidget.MyTableWidget.filename = filename
         if not filename == "":
             f = open(filename, 'wb')
