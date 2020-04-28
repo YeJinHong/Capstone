@@ -1,8 +1,9 @@
 import sys
 from PyQt5.QtWidgets import *
-from PyQt5.QtGui import QIcon
+from PyQt5.QtGui import *
 from PyQt5.QtCore import Qt, pyqtSlot
 import TableWidget
+
 
 class MyMainWindow(QMainWindow):
     # save와 save as를 구별하기 위함
@@ -85,6 +86,7 @@ class MyMainWindow(QMainWindow):
         if not fname[0] == "":
             self.setWindowTitle(fname[0]+' - Aeye')
             self.statusBar().showMessage("열림 : " + fname[0])
+        self.table_widget.PreView()
         # btn2 버튼에 접근하여 파일을 불러오고 난 후에 버튼 활성화될 수 있게
         # MyWidget().btn.setEnabled(True)
 

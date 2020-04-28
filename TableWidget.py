@@ -1,14 +1,14 @@
-import sys
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import Qt
 from PyQt5.QtPrintSupport import QPrinter, QPrintDialog
-from PyQt5.QtGui import QPainter
+from PyQt5.QtGui import *
 
 import text_extract as te
 
 
 class MyTableWidget(QWidget):
     filename = ""
+
     def __init__(self, parent):
         super(QWidget, self).__init__(parent)
         self.layout = QVBoxLayout(self);
@@ -18,10 +18,12 @@ class MyTableWidget(QWidget):
         self.tab1 = MyWidget()
         self.tab1.label1.setText("파일 입력창")
         self.tab1.label2.setText("텍스트 결과창")
+        self.tab1.grid.addWidget(self.tab1.label_picture, 1, 0)
         self.tab2 = MyWidget()
         self.tab2.label1.setText("텍스트 입력창")
         self.tab2.label2.setText("점자 결과창")
         self.tab2.text1.setText(self.tab1.text2.toPlainText())
+        self.tab2.grid.addWidget(self.tab1.text1, 1, 0)
         self.tabs.resize(1000, 800)
         self.tabs.addTab(self.tab1, "image -> text")
         self.tabs.addTab(self.tab2, "text -> brail text")
@@ -38,6 +40,13 @@ class MyTableWidget(QWidget):
         self.tab1.text2.setPlainText(text)
         self.tab2.text1.setPlainText(text)
 
+    def PreView(self):
+        # QPixmap 객체 생성 후 이미지 파일 데이터 로드, Label을 이용하여 화면에 표시
+        self.tab1.qPixmapFileVar = QPixmap()
+        self.tab1.qPixmapFileVar.load(self.filename)
+        self.tab1.qPixmapFileVar = self.tab1.qPixmapFileVar.scaledToWidth(400)
+        self.tab1.label_picture.setPixmap(self.tab1.qPixmapFileVar)
+
 
 class MyWidget(QWidget):
     filename = ""
@@ -52,41 +61,27 @@ class MyWidget(QWidget):
         self.label1.setAlignment(Qt.AlignVCenter)
         # 버튼 - 파일 변환창
         self.btn = QPushButton('파일 변환', self)
+        # 이미지 출력창
+        self.label_picture = QLabel('이미지 출력창', self)
         # 텍스트 출력창
         self.text1 = QTextEdit()
         self.text2 = QTextEdit()
-
         #버튼 - 프린터 생성
         self.btn_p = QPushButton('Print PDF File', self)
         self.btn_p.clicked.connect(self.btnClickPrint)
 
-        #슬라이더 - 확대 축소 기능
-        self.slider = QSlider(Qt.Horizontal, self)
-        self.slider.setRange(8, 30)
-        self.slider.setSingleStep(2)
-        self.slider.valueChanged.connect(self.font_slider)
-
-        #슬라이더 값에 따라 text1의 폰트 크기 조절
-
-
-        grid = QGridLayout()
-        self.setLayout(grid)
-        grid.addWidget(self.label1, 0, 0)
-        grid.addWidget(self.text1, 1, 0)
-        grid.addWidget(self.btn, 1, 1)
-        grid.addWidget(self.label2, 0, 2)
-        grid.addWidget(self.text2, 1, 2)
-        grid.addWidget(self.btn_p, 2, 0)
-        grid.addWidget(self.slider, 2, 2)
+        self.grid = QGridLayout()
+        self.setLayout(self.grid)
+        self.grid.addWidget(self.label1, 0, 0)
+        #self.grid.addWidget(self.text1, 1, 0)
+        self.grid.addWidget(self.btn, 1, 1)
+        self.grid.addWidget(self.label2, 0, 2)
+        self.grid.addWidget(self.text2, 1, 2)
+        self.grid.addWidget(self.btn_p, 2, 0)
 
         self.setGeometry(300, 100, 350, 150)
         #self.setWindowTitle("QWidget")
         self.show()
-
-
-    # 확대 축소 기능을 폰트 조절로 구현하려 했으나 에러 발생
-    def font_slider(self):
-        self.text1.setFontPointSize(self, self.slider.value)
 
     # 프린터 생성, 실행
     def btnClickPrint(self):
