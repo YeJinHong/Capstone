@@ -23,11 +23,12 @@ class MyTableWidget(QWidget):
         self.tab2.label1.setText("텍스트 입력창")
         self.tab2.label2.setText("점자 결과창")
         self.tab2.label_picture.setParent(None)
-        self.tab2.grid.addWidget(self.tab1.text1, 1, 0)
+        self.tab2.grid.addWidget(self.tab2.text1, 1, 0)
         self.tabs.resize(1000, 800)
         self.tabs.addTab(self.tab1, "image -> text")
-        self.tabs.addTab(self.tab2, "text -> brail text")
+        self.tabs.addTab(self.tab2, "text -> braille text")
         self.tab1.btn.clicked.connect(self.WriteText)
+        self.tab2.btn.clicked.connect(self.WriteBraille)
         self.layout.addWidget(self.tabs)
         self.setLayout(self.layout)
 
@@ -37,7 +38,7 @@ class MyTableWidget(QWidget):
         text = te.ReturnText(self.filename)
         # text2 창에 읽어온 텍스트를 출력
         self.tab1.text2.setPlainText(text)
-        self.tab1.text1.setPlainText(text)
+        self.tab2.text1.setPlainText(text)
 
     def PreView(self):
         # QPixmap 객체 생성 후 이미지 파일 데이터 로드, Label을 이용하여 화면에 표시
@@ -45,6 +46,12 @@ class MyTableWidget(QWidget):
         self.tab1.qPixmapFileVar.load(self.filename)
         self.tab1.qPixmapFileVar = self.tab1.qPixmapFileVar.scaledToWidth(400)
         self.tab1.label_picture.setPixmap(self.tab1.qPixmapFileVar)
+
+    # 텍스트 박스에 있는 내용을 점자로 바꿔 씀
+    def WriteBraille(self):
+        text = self.tab2.text1.toPlainText()
+
+        self.tab2.text2.setText(text)
 
 
 class MyWidget(QWidget):
