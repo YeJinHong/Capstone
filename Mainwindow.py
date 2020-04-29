@@ -4,7 +4,6 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import Qt, pyqtSlot
 import TableWidget
 
-
 class MyMainWindow(QMainWindow):
     # save와 save as를 구별하기 위함
     # (True:이미 저장된 파일이 있어 거기에 덮어씌우는 경우/False:처음 저장하는 거라 이름을 지정해줘야 하는 경우)
@@ -55,14 +54,14 @@ class MyMainWindow(QMainWindow):
         filesaveAction.setStatusTip('내 PC에 파일을 저장합니다.')
         filesaveAction.triggered.connect(self.filesave)
         # 점자 변환 칸 (tab2.text2)에 내용이 들어가기 전까진 오류 방지를 위해 저장 안 되게
-        # filesaveAction.setEnabled(False)
+        filesaveAction.setEnabled(False)
         filemenu.addAction(filesaveAction)
         # 다른 이름으로 저장
         filesaveasAction = QAction(QIcon('exit.png'), '다른 이름으로 저장', self)
         filesaveasAction.setShortcut('Ctrl+Shift+S')
         filesaveasAction.setStatusTip('내 PC에 파일을 다른 이름으로 저장합니다.')
         # 점자 변환 칸 (tab2.text2)에 내용이 들어가기 전까진 오류 방지를 위해 저장 안 되게
-        # filesaveAction.setEnabled(False)
+        filesaveasAction.setEnabled(False)
         filesaveasAction.triggered.connect(self.filesaveas)
         filemenu.addAction(filesaveasAction)
         # 종료
@@ -88,7 +87,9 @@ class MyMainWindow(QMainWindow):
             self.statusBar().showMessage("열림 : " + fname[0])
         self.table_widget.PreView()
         # btn2 버튼에 접근하여 파일을 불러오고 난 후에 버튼 활성화될 수 있게
-        # MyWidget().btn.setEnabled(True)
+        # TableWidget.MyTableWidget.
+        self.filesaveAction.setEnabled(True)
+        self.filesaveasAction.setEnabled(True)
 
     def filesave(self):  # 맨 처음의 저장 (다른 이름으로 저장이랑 같은 기능)
         if not self.savestate:
