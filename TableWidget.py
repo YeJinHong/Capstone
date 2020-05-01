@@ -4,6 +4,7 @@ from PyQt5.QtPrintSupport import QPrinter, QPrintDialog
 from PyQt5.QtGui import *
 
 import text_extract as te
+import convertor
 
 
 class MyTableWidget(QWidget):
@@ -50,8 +51,8 @@ class MyTableWidget(QWidget):
     # 텍스트 박스에 있는 내용을 점자로 바꿔 씀
     def WriteBraille(self):
         text = self.tab2.text1.toPlainText()
-
-        self.tab2.text2.setText(text)
+        result = convertor.ko_braile_convertor(text)
+        self.tab2.text2.setText(result)
 
 
 class MyWidget(QWidget):
