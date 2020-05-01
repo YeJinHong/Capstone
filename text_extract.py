@@ -1,11 +1,11 @@
 # test_extract.py
 
+import subprocess # pip install --pre pyhwp
 from pytesseract import *  # pip install pytesseract
 import cv2  # pip install opencv-python
 import docx2txt  # pip install docx2txt
 import pdfplumber  # pip install pdfplumber
 from pptx import Presentation  # pip install python-pptx
-import ole  # pip install ole-py
 
 # 확장자별로 이미지를 불러오는 방식을 다르게 함
 
@@ -66,13 +66,12 @@ def PptxtoText(fileName):
                 continue
             for paragraph in shape.text_frame.paragraphs:
                 extracted_text += "".join(paragraph.text)+"\n"
-
     return extracted_text
 
 # hwp 파일에만 사용되는 함수
 def HwptoText(fileName):
-    text = ole.open(fileName)
-    extracted_text = text.get_stream('PrvText').read().decode('utf-16le')
+    text = subprocess.check_output(['hwp5txt', fileName])
+    extracted_text = text.decode("utf-8")
     return extracted_text
 
 def ReturnText(fileName):  # switch 문이 없어서 우선 if-else로 작성
