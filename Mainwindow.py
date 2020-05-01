@@ -3,7 +3,6 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import Qt, pyqtSlot
 from TableWidget import *
-import codecs
 
 class MyMainWindow(QMainWindow):
     # save와 save as를 구별하기 위함
