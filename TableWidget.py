@@ -52,8 +52,7 @@ class MyTableWidget(QWidget):
     def WriteBraille(self):
         text = self.tab2.text1.toPlainText()
         result = convertor.ko_braile_convertor(text)
-        self.tab2.text2.setText(result)
-
+        self.tab2.text2.setPlainText(result)
 
 class MyWidget(QWidget):
     filename = ""
@@ -68,7 +67,7 @@ class MyWidget(QWidget):
         self.label1.setAlignment(Qt.AlignVCenter)
         # 버튼 - 파일 변환창
         self.btn = QPushButton('파일 변환', self)
-        #self.btn.setEnabled(False)
+        self.btn.setEnabled(False)
         # 이미지 출력창
         self.label_picture = QLabel('이미지 출력창', self)
         # 텍스트 출력창
