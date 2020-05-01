@@ -4,6 +4,7 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import Qt, pyqtSlot
 from TableWidget import *
 
+
 class MyMainWindow(QMainWindow):
     # save와 save as를 구별하기 위함
     # (True:이미 저장된 파일이 있어 거기에 덮어씌우는 경우/False:처음 저장하는 거라 이름을 지정해줘야 하는 경우)

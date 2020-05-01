@@ -6,6 +6,7 @@ from PyQt5.QtGui import *
 import text_extract as te
 import convertor
 
+
 class MyTableWidget(QWidget):
     filename = ""
 
@@ -53,22 +54,27 @@ class MyTableWidget(QWidget):
         result = convertor.ko_braile_convertor(text)
         self.tab2.text2.setPlainText(result)
 
+
 class MyWidget(QWidget):
     filename = ""
 
     def __init__(self):
         super().__init__()
 
+
         # 라벨-파일 선택 안내문
         self.label1 = QLabel('입력창', self)
         self.label1.setAlignment(Qt.AlignVCenter)
         self.label2 = QLabel('결과창', self)
-        self.label1.setAlignment(Qt.AlignVCenter)
+        self.label2.setAlignment(Qt.AlignVCenter)
         # 버튼 - 파일 변환창
         self.btn = QPushButton('파일 변환', self)
         self.btn.setEnabled(False)
         # 이미지 출력창
         self.label_picture = QLabel('이미지 출력창', self)
+        self.label_picture.setFixedWidth(400)
+        self.label_picture.setStyleSheet("QLabel { background-color : grey; }")
+        self.label_picture.setAlignment(Qt.AlignCenter)
         # 텍스트 출력창
         self.text1 = QTextEdit()
         self.text2 = QTextEdit()
@@ -78,10 +84,10 @@ class MyWidget(QWidget):
 
         self.grid = QGridLayout()
         self.setLayout(self.grid)
-        self.grid.addWidget(self.label1, 0, 0)
+        self.grid.addWidget(self.label1, 0, 0, Qt.AlignCenter)
         #self.grid.addWidget(self.text1, 1, 0)
         self.grid.addWidget(self.btn, 1, 1)
-        self.grid.addWidget(self.label2, 0, 2)
+        self.grid.addWidget(self.label2, 0, 2, Qt.AlignCenter)
         self.grid.addWidget(self.text2, 1, 2)
         self.grid.addWidget(self.btn_p, 2, 0)
 
