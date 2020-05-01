@@ -54,14 +54,14 @@ class MyMainWindow(QMainWindow):
         filesaveAction.setStatusTip('내 PC에 파일을 저장합니다.')
         filesaveAction.triggered.connect(self.filesave)
         # 점자 변환 칸 (tab2.text2)에 내용이 들어가기 전까진 오류 방지를 위해 저장 안 되게
-        filesaveAction.setEnabled(False)
+        # filesaveAction.setEnabled(False)
         filemenu.addAction(filesaveAction)
         # 다른 이름으로 저장
         filesaveasAction = QAction(QIcon('exit.png'), '다른 이름으로 저장', self)
         filesaveasAction.setShortcut('Ctrl+Shift+S')
         filesaveasAction.setStatusTip('내 PC에 파일을 다른 이름으로 저장합니다.')
         # 점자 변환 칸 (tab2.text2)에 내용이 들어가기 전까진 오류 방지를 위해 저장 안 되게
-        filesaveasAction.setEnabled(False)
+        # filesaveasAction.setEnabled(False)
         filesaveasAction.triggered.connect(self.filesaveas)
         filemenu.addAction(filesaveasAction)
         # 종료
