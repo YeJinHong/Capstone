@@ -6,7 +6,6 @@ from PyQt5.QtGui import *
 import text_extract as te
 import convertor
 
-
 class MyTableWidget(QWidget):
     filename = ""
 
