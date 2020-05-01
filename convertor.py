@@ -21,7 +21,7 @@ def ko_braile_convertor(sentence):
 
     split_keyword_list = list(sentence) #원문장 출력부분
 
-    # print(split_keyword_list)
+    #print(split_keyword_list)
 
 
     result = list()
