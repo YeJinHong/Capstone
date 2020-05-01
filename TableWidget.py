@@ -67,7 +67,7 @@ class MyWidget(QWidget):
         self.label1.setAlignment(Qt.AlignVCenter)
         # 버튼 - 파일 변환창
         self.btn = QPushButton('파일 변환', self)
-        self.btn.setEnabled(False)
+        #self.btn.setEnabled(False)
         # 이미지 출력창
         self.label_picture = QLabel('이미지 출력창', self)
         # 텍스트 출력창

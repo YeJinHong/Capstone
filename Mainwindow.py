@@ -87,9 +87,10 @@ class MyMainWindow(QMainWindow):
             self.statusBar().showMessage("열림 : " + fname[0])
         self.table_widget.PreView()
         # btn2 버튼에 접근하여 파일을 불러오고 난 후에 버튼 활성화될 수 있게
-        # TableWidget.MyTableWidget.
-        self.filesaveAction.setEnabled(True)
-        self.filesaveasAction.setEnabled(True)
+        #TableWidget.MyTableWidget().tab1.btn.setEnabled(True)
+        #TableWidget.MyTableWidget().tab2.btn.setEnabled(True)
+        #self.initmenu().filesaveAction.setEnabled(True)
+        #self.filesaveasAction.setEnabled(True)
 
     def filesave(self):  # 맨 처음의 저장 (다른 이름으로 저장이랑 같은 기능)
         if not self.savestate:
