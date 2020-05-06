@@ -29,6 +29,7 @@ class MyTableWidget(QWidget):
         self.tabs.addTab(self.tab1, "image -> text")
         self.tabs.addTab(self.tab2, "text -> braille text")
         self.tab1.btn.clicked.connect(self.WriteText)
+        self.tab1.btn.setEnabled(False)
         self.tab2.btn.clicked.connect(self.WriteBraille)
         self.layout.addWidget(self.tabs)
         self.setLayout(self.layout)
@@ -69,7 +70,7 @@ class MyWidget(QWidget):
         self.label2.setAlignment(Qt.AlignVCenter)
         # 버튼 - 파일 변환창
         self.btn = QPushButton('파일 변환', self)
-        self.btn.setEnabled(False)
+
         # 이미지 출력창
         self.label_picture = QLabel('이미지 출력창', self)
         self.label_picture.setFixedWidth(400)

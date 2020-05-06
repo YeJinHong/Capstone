@@ -89,7 +89,6 @@ class MyMainWindow(QMainWindow):
         self.table_widget.PreView()
         # 파일 변환 버튼에 접근하여 파일을 불러오고 난 후에 버튼 활성화될 수 있게
         self.table_widget.tab1.btn.setEnabled(True)
-        self.table_widget.tab2.btn.setEnabled(True)
 
     def filesave(self):  # 맨 처음의 저장 (다른 이름으로 저장이랑 같은 기능)
         if not self.savestate:
