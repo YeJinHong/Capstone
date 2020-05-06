@@ -56,6 +56,32 @@ temp_jongsung_B = [chr(int('2801',16)),
                    "".join([chr(int('2801',16)),chr(int('2801',16))]),
                    chr(int('280C',16))]
 
+temp_symbol = ["!","\"","#","$",
+               "%","&","\'",
+               "(",")","*","+",
+               ",","-",".","/"]
+temp_symbol_B = [chr(int('282E',16)),
+                 chr(int('2810',16)),
+                 chr(int('283C',16)),
+                 chr(int('282B',16)),
+
+                 chr(int('2829',16)),
+                 chr(int('282F',16)),
+                 chr(int('2804',16)),
+
+                 chr(int('2837',16)),
+                 chr(int('283E',16)),
+                 chr(int('2821',16)),
+                 chr(int('282C',16)),
+
+                 chr(int('2820',16)),
+                 chr(int('2824',16)),
+                 chr(int('2828',16)),
+                 chr(int('280C',16))
+
+                 ]
+
+
 temp_number = [0,1,2,3,4,5,6,7,8,9]
 temp_number_B = [chr(int('281A',16)),chr(int('2801',16)),chr(int('2803',16)),chr(int('2809',16)),chr(int('2819',16)),chr(int('2811',16)),
                  chr(int('280B',16)),chr(int('281B',16)),chr(int('2813',16)),chr(int('280A',16))]
@@ -137,6 +163,7 @@ map_number = defaultdict()
 map_UpperCase = defaultdict()
 map_LowerCase = defaultdict()
 
+map_Symbol = defaultdict()
 
 for idx, sung in enumerate(temp_jongsung):
     map_jongsung[sung]=temp_jongsung_B[idx]
@@ -156,3 +183,6 @@ for idx, up in enumerate(temp_UpperCase):
 
 for idx, low in enumerate(temp_LowerCase):
     map_LowerCase[low] = temp_LowerCase_B[idx]
+
+for idx, sym in enumerate(temp_symbol):
+    map_Symbol[sym] = temp_symbol_B[idx]

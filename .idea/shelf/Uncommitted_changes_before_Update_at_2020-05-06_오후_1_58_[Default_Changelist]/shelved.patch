@@ -1,0 +1,170 @@
+Index: map/ko_braile_map.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>from collections import defaultdict\r\n\r\n\r\ntemp_chosung = [\"ㄱ\",\"ㄴ\",\"ㄷ\",\"ㄹ\",\"ㅁ\",\"ㅂ\",\"ㅅ\",\"ㅇ\",\"ㅈ\",\"ㅊ\",\"ㅋ\",\"ㅌ\",\"ㅍ\",\"ㅎ\",\"ㄲ\",\"ㄸ\",\"ㅃ\",\"ㅆ\",\"ㅉ\"]\r\ntemp_chosung_B = [chr(int('2808',16)),chr(int('2809',16)),chr(int('280A',16)),chr(int('2810',16)),chr(int('2811',16)),\r\n                  chr(int('2818',16)),chr(int('2820',16)),chr(int('281B',16)),chr(int('2828',16)),chr(int('2830',16)),\r\n                  chr(int('280B',16)),chr(int('2813',16)),chr(int('2819',16)),chr(int('281A',16)),\r\n                  \"\".join([chr(int('2820',16)),chr(int('2808',16))]),\r\n                  \"\".join([chr(int('2820',16)),chr(int('280A',16))]),\r\n                  \"\".join([chr(int('2820',16)),chr(int('2818',16))]),\r\n                  \"\".join([chr(int('2820',16)),chr(int('2820',16))]),\r\n                  \"\".join([chr(int('2820',16)),chr(int('2828',16))])]\r\n\r\ntemp_jungsung = [\"ㅏ\",\"ㅑ\",\"ㅓ\",\"ㅕ\",\"ㅗ\",\"ㅛ\",\"ㅜ\",\"ㅠ\",\"ㅡ\",\"ㅣ\",\"ㅐ\",\"ㅒ\",\"ㅔ\",\"ㅖ\",\"ㅘ\",\"ㅙ\",\"ㅚ\",\"ㅝ\",\"ㅞ\",\"ㅟ\",\"ㅢ\"]\r\ntemp_jungsung_B = [chr(int('2823',16)),chr(int('281C',16)),chr(int('280E',16)),chr(int('2831',16)),chr(int('2825',16)),\r\n                   chr(int('282C',16)),chr(int('280D',16)),chr(int('2829',16)),chr(int('282A',16)),chr(int('2815',16)),chr(int('2817',16)),\r\n                   \"\".join([chr(int('281C',16)),chr(int('2817',16))]),\r\n                   chr(int('281D',16)),\r\n                   chr(int('280C',16)),\r\n                   chr(int('2827',16)),\r\n                   \"\".join([chr(int('2827',16)),chr(int('2817',16))]),\r\n                   chr(int('283D',16)),\r\n                   chr(int('280F',16)),\r\n                   \"\".join([chr(int('280F',16)),chr(int('2817',16))]),\r\n                   \"\".join([chr(int('280D',16)),chr(int('2817',16))]),\r\n                   chr(int('283A',16))]\r\n\r\ntemp_jongsung = [\"ㄱ\",\"ㄴ\",\"ㄷ\",\"ㄹ\",\"ㅁ\",\"ㅂ\",\"ㅅ\",\"ㅇ\",\"ㅈ\",\"ㅊ\",\"ㅋ\",\"ㅌ\",\"ㅍ\",\"ㅎ\", \"ㄳ\",\"ㄵ\",\"ㄶ\",\"ㄺ\",\"ㄻ\",\"ㄼ\",\"ㄽ\",\"ㄾ\",\"ㄿ\",\"ㅀ\",\"ㅄ\",\"ㄲ\",\"ㅆ\"]\r\ntemp_jongsung_B = [chr(int('2801',16)),\r\n                   chr(int('2812',16)),\r\n                   chr(int('2814',16)),\r\n                   chr(int('2802',16)),\r\n                   chr(int('2822',16)),\r\n                   chr(int('2803',16)),\r\n                   chr(int('2804',16)),\r\n                   chr(int('2836',16)),\r\n                   chr(int('2805',16)),\r\n                   chr(int('2806',16)),\r\n                   chr(int('2816',16)),\r\n                   chr(int('2826',16)),\r\n                   chr(int('2832',16)),\r\n                   chr(int('2834',16)),\r\n                   \"\".join([chr(int('2801',16)),chr(int('2804',16))]),\r\n                   \"\".join([chr(int('2812',16)),chr(int('2805',16))]),\r\n                   \"\".join([chr(int('2812',16)),chr(int('2834',16))]),\r\n\r\n                   \"\".join([chr(int('2802',16)),chr(int('2801',16))]),\r\n                   \"\".join([chr(int('2802',16)),chr(int('2822',16))]),\r\n                   \"\".join([chr(int('2802',16)),chr(int('2803',16))]),\r\n\r\n                   \"\".join([chr(int('2802',16)),chr(int('2804',16))]),\r\n                   \"\".join([chr(int('2802',16)),chr(int('2826',16))]),\r\n                   \"\".join([chr(int('2802',16)),chr(int('2832',16))]),\r\n                   \"\".join([chr(int('2802',16)),chr(int('2834',16))]),\r\n                   \"\".join([chr(int('2803',16)),chr(int('2804',16))]),\r\n                   \"\".join([chr(int('2801',16)),chr(int('2801',16))]),\r\n                   chr(int('280C',16))]\r\n\r\ntemp_number = [0,1,2,3,4,5,6,7,8,9]\r\ntemp_number_B = [chr(int('281A',16)),chr(int('2801',16)),chr(int('2803',16)),chr(int('2809',16)),chr(int('2819',16)),chr(int('2811',16)),\r\n                 chr(int('280B',16)),chr(int('281B',16)),chr(int('2813',16)),chr(int('280A',16))]\r\n\r\ntemp_UpperCase = [\"A\",\"B\",\"C\",\"D\",\"E\",\"F\",\"G\",\"H\",\"I\",\"J\",\"K\",\"L\",\"M\",\"N\",\"O\",\"P\",\"Q\",\"R\",\"S\",\"T\",\"U\",\"V\",\"W\",\"X\",\"Y\",\"Z\"]\r\ntemp_UpperCase_B=[\"\".join([chr(int('2820', 16)),chr(int('2801', 16))]),\r\n                  \"\".join([chr(int('2820', 16)), chr(int('2803', 16))]),\r\n                  \"\".join([chr(int('2820', 16)), chr(int('2809', 16))]),\r\n                  \"\".join([chr(int('2820', 16)), chr(int('2819', 16))]),\r\n                  \"\".join([chr(int('2820', 16)), chr(int('2811', 16))]),\r\n\r\n                  \"\".join([chr(int('2820', 16)), chr(int('280B', 16))]),\r\n                  \"\".join([chr(int('2820', 16)), chr(int('281B', 16))]),\r\n                  \"\".join([chr(int('2820', 16)), chr(int('2813', 16))]),\r\n                  \"\".join([chr(int('2820', 16)), chr(int('280A', 16))]),\r\n\r\n                  \"\".join([chr(int('2820', 16)), chr(int('281A', 16))]),\r\n                  \"\".join([chr(int('2820', 16)), chr(int('2805', 16))]),\r\n                  \"\".join([chr(int('2820', 16)), chr(int('2807', 16))]),\r\n                  \"\".join([chr(int('2820', 16)), chr(int('280D', 16))]),\r\n\r\n                  \"\".join([chr(int('2820', 16)), chr(int('281D', 16))]),\r\n                  \"\".join([chr(int('2820', 16)), chr(int('2815', 16))]),\r\n                  \"\".join([chr(int('2820', 16)), chr(int('280F', 16))]),\r\n                  \"\".join([chr(int('2820', 16)), chr(int('281F', 16))]),\r\n\r\n                  \"\".join([chr(int('2820', 16)), chr(int('2817', 16))]),\r\n                  \"\".join([chr(int('2820', 16)), chr(int('280E', 16))]),\r\n                  \"\".join([chr(int('2820', 16)), chr(int('281E', 16))]),\r\n                  \"\".join([chr(int('2820', 16)), chr(int('2825', 16))]),\r\n                  \"\".join([chr(int('2820', 16)), chr(int('2827', 16))]),\r\n                  \"\".join([chr(int('2820', 16)), chr(int('283A', 16))]),\r\n                  \"\".join([chr(int('2820', 16)), chr(int('282D', 16))]),\r\n                  \"\".join([chr(int('2820', 16)), chr(int('283D', 16))]),\r\n                  \"\".join([chr(int('2820', 16)), chr(int('2835', 16))])\r\n\r\n                  ]\r\n\r\ntemp_LowerCase=[\"a\",\"b\",\"c\",\"d\",\"e\",\"f\",\"g\",\"h\",\"i\",\"j\",\"k\",\"l\",\"m\",\"n\",\"o\",\"p\",\"q\",\"r\",\"s\",\"t\",\"u\",\"v\",\"w\",\"x\",\"y\",\"z\"]\r\ntemp_LowerCase_B=[chr(int('2801', 16)),\r\n                  chr(int('2803', 16)),\r\n                  chr(int('2809', 16)),\r\n                  chr(int('2819', 16)),\r\n                  chr(int('2811', 16)),\r\n\r\n                  chr(int('280B', 16)),\r\n                  chr(int('281B', 16)),\r\n                  chr(int('2813', 16)),\r\n                  chr(int('280A', 16)),\r\n\r\n                  chr(int('281A', 16)),\r\n                  chr(int('2805', 16)),\r\n                  chr(int('2807', 16)),\r\n                  chr(int('280D', 16)),\r\n\r\n                  chr(int('281D', 16)),\r\n                  chr(int('2815', 16)),\r\n                  chr(int('280F', 16)),\r\n                  chr(int('281F', 16)),\r\n\r\n                  chr(int('2817', 16)),\r\n                  chr(int('280E', 16)),\r\n                  chr(int('281E', 16)),\r\n                  chr(int('2825', 16)),\r\n                  chr(int('2827', 16)),\r\n                  chr(int('283A', 16)),\r\n                  chr(int('282D', 16)),\r\n                  chr(int('283D', 16)),\r\n                  chr(int('2835', 16))\r\n                  ]\r\n\r\n\r\n#construct mapping_dict\r\nmap_chosung = defaultdict()\r\nmap_jungsung = defaultdict()\r\nmap_jongsung = defaultdict()\r\nmap_number = defaultdict()\r\n\r\nmap_UpperCase = defaultdict()\r\nmap_LowerCase = defaultdict()\r\n\r\n\r\nfor idx, sung in enumerate(temp_jongsung):\r\n    map_jongsung[sung]=temp_jongsung_B[idx]\r\nmap_jongsung[\" \"]=\"\"\r\n\r\nfor idx, sung in enumerate(temp_jungsung):\r\n    map_jungsung[sung]=temp_jungsung_B[idx]\r\n\r\nfor idx, sung in enumerate(temp_chosung):\r\n    map_chosung[sung]=temp_chosung_B[idx]\r\n\r\nfor idx, num in enumerate(temp_number):\r\n    map_number[num]=temp_number_B[idx]\r\n\r\nfor idx, up in enumerate(temp_UpperCase):\r\n    map_UpperCase[up] = temp_UpperCase_B[idx]\r\n\r\nfor idx, low in enumerate(temp_LowerCase):\r\n    map_LowerCase[low] = temp_LowerCase_B[idx]
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- map/ko_braile_map.py	(revision 1bbf1d6e98802b08245cdb173d7c01ba37e16678)
++++ map/ko_braile_map.py	(date 1588739367126)
+@@ -56,6 +56,32 @@
+                    "".join([chr(int('2801',16)),chr(int('2801',16))]),
+                    chr(int('280C',16))]
+ 
++temp_symbol = ["!","\"","#","$",
++               "%","&","\'",
++               "(",")","*","+",
++               ",","-",".","/"]
++temp_symbol_B = [chr(int('282E',16)),
++                 chr(int('2810',16)),
++                 chr(int('283C',16)),
++                 chr(int('282B',16)),
++
++                 chr(int('2829',16)),
++                 chr(int('282F',16)),
++                 chr(int('2804',16)),
++
++                 chr(int('2837',16)),
++                 chr(int('283E',16)),
++                 chr(int('2821',16)),
++                 chr(int('282C',16)),
++
++                 chr(int('2820',16)),
++                 chr(int('2824',16)),
++                 chr(int('2828',16)),
++                 chr(int('280C',16))
++
++                 ]
++
++
+ temp_number = [0,1,2,3,4,5,6,7,8,9]
+ temp_number_B = [chr(int('281A',16)),chr(int('2801',16)),chr(int('2803',16)),chr(int('2809',16)),chr(int('2819',16)),chr(int('2811',16)),
+                  chr(int('280B',16)),chr(int('281B',16)),chr(int('2813',16)),chr(int('280A',16))]
+@@ -137,6 +163,7 @@
+ map_UpperCase = defaultdict()
+ map_LowerCase = defaultdict()
+ 
++map_Symbol = defaultdict()
+ 
+ for idx, sung in enumerate(temp_jongsung):
+     map_jongsung[sung]=temp_jongsung_B[idx]
+@@ -155,4 +182,7 @@
+     map_UpperCase[up] = temp_UpperCase_B[idx]
+ 
+ for idx, low in enumerate(temp_LowerCase):
+-    map_LowerCase[low] = temp_LowerCase_B[idx]
+\ No newline at end of file
++    map_LowerCase[low] = temp_LowerCase_B[idx]
++
++for idx, sym in enumerate(temp_symbol):
++    map_Symbol[sym] = temp_symbol_B[idx]
+\ No newline at end of file
+Index: convertor.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import re\r\n\r\nimport TableWidget\r\n\r\nfrom map.ko_braile_map import *\r\n\r\n\r\nUpper_CODE=65\r\nLower_CODE=97\r\n\r\nBASE_CODE, CHOSUNG, JUNGSUNG = 44032, 588, 28\r\nCHOSUNG_LIST = ['ㄱ', 'ㄲ', 'ㄴ', 'ㄷ', 'ㄸ', 'ㄹ', 'ㅁ', 'ㅂ', 'ㅃ', 'ㅅ', 'ㅆ', 'ㅇ', 'ㅈ', 'ㅉ', 'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ']\r\nJUNGSUNG_LIST = ['ㅏ', 'ㅐ', 'ㅑ', 'ㅒ', 'ㅓ', 'ㅔ', 'ㅕ', 'ㅖ', 'ㅗ', 'ㅘ', 'ㅙ', 'ㅚ', 'ㅛ', 'ㅜ', 'ㅝ', 'ㅞ', 'ㅟ', 'ㅠ', 'ㅡ', 'ㅢ', 'ㅣ']\r\nJONGSUNG_LIST = [' ', 'ㄱ', 'ㄲ', 'ㄳ', 'ㄴ', 'ㄵ', 'ㄶ', 'ㄷ', 'ㄹ', 'ㄺ', 'ㄻ', 'ㄼ', 'ㄽ', 'ㄾ', 'ㄿ', 'ㅀ', 'ㅁ', 'ㅂ', 'ㅄ', 'ㅅ', 'ㅆ', 'ㅇ', 'ㅈ', 'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ']\r\n\r\nLowerCase_List=['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z']\r\n\r\nUpperCase_List=['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z']\r\n\r\ndef ko_braile_convertor(sentence):\r\n    sentence = sentence.replace(\" \", \"/\")\r\n\r\n\r\n    split_keyword_list = list(sentence) #원문장 출력부분\r\n\r\n    print(split_keyword_list)\r\n\r\n\r\n    result = list()\r\n    for keyword in split_keyword_list:\r\n        # 한글 여부 check 후 분리\r\n        if re.match('.*[ㄱ-ㅎㅏ-ㅣ가-힣]+.*', keyword) is not None:\r\n            char_code = ord(keyword) - BASE_CODE\r\n            char1 = int(char_code / CHOSUNG)\r\n            result.append(map_chosung[CHOSUNG_LIST[char1]])\r\n            char2 = int((char_code - (CHOSUNG * char1)) / JUNGSUNG)\r\n            result.append(map_jungsung[JUNGSUNG_LIST[char2]])\r\n            char3 = int((char_code - (CHOSUNG * char1) - (JUNGSUNG * char2)))\r\n            result.append(map_jongsung[JONGSUNG_LIST[char3]])\r\n\r\n        elif re.match('[0-9]', keyword) is not None:\r\n            result.append(map_number[int(keyword)])\r\n\r\n\r\n        elif re.match('[A-Z]',keyword) is not None:\r\n            char_code1=ord(keyword)-Upper_CODE\r\n            charA = int(char_code1)\r\n            result.append(map_UpperCase[UpperCase_List[charA]])\r\n\r\n        elif re.match('[a-z]', keyword) is not None:\r\n            char_code2 = ord(keyword) - Lower_CODE\r\n            charB = int(char_code2)\r\n            result.append(map_LowerCase[LowerCase_List[charB]])\r\n\r\n\r\n\r\n        else:\r\n            result.append(keyword)\r\n\r\n\r\n    result = \"\".join(result)\r\n    result = result.replace(\" \", \"\")\r\n    result = result.replace(\"/\", \" \")\r\n\r\n\r\n    # result\r\n    return result\r\n\r\n\r\n'''if __name__ == '__main__':\r\n    Inputtext = TableWidget.text\r\n\r\n    result= ko_braile_convertor(Inputtext)\r\n    return result'''\r\n\r\n\r\n\r\n\r\n\r\n\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- convertor.py	(revision 1bbf1d6e98802b08245cdb173d7c01ba37e16678)
++++ convertor.py	(date 1588739832187)
+@@ -4,11 +4,13 @@
+ 
+ from map.ko_braile_map import *
+ 
++Symbol_CODE=21
+ 
+ Upper_CODE=65
+ Lower_CODE=97
+ 
+ BASE_CODE, CHOSUNG, JUNGSUNG = 44032, 588, 28
++
+ CHOSUNG_LIST = ['ㄱ', 'ㄲ', 'ㄴ', 'ㄷ', 'ㄸ', 'ㄹ', 'ㅁ', 'ㅂ', 'ㅃ', 'ㅅ', 'ㅆ', 'ㅇ', 'ㅈ', 'ㅉ', 'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ']
+ JUNGSUNG_LIST = ['ㅏ', 'ㅐ', 'ㅑ', 'ㅒ', 'ㅓ', 'ㅔ', 'ㅕ', 'ㅖ', 'ㅗ', 'ㅘ', 'ㅙ', 'ㅚ', 'ㅛ', 'ㅜ', 'ㅝ', 'ㅞ', 'ㅟ', 'ㅠ', 'ㅡ', 'ㅢ', 'ㅣ']
+ JONGSUNG_LIST = [' ', 'ㄱ', 'ㄲ', 'ㄳ', 'ㄴ', 'ㄵ', 'ㄶ', 'ㄷ', 'ㄹ', 'ㄺ', 'ㄻ', 'ㄼ', 'ㄽ', 'ㄾ', 'ㄿ', 'ㅀ', 'ㅁ', 'ㅂ', 'ㅄ', 'ㅅ', 'ㅆ', 'ㅇ', 'ㅈ', 'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ']
+@@ -17,6 +19,11 @@
+ 
+ UpperCase_List=['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z']
+ 
++Symbol_List=['!','\"','#','$',
++             '%','&','\'',
++             '(',')','*','+',
++             '-',',','.','/']
++
+ def ko_braile_convertor(sentence):
+     sentence = sentence.replace(" ", "/")
+ 
+@@ -47,12 +54,21 @@
+             charA = int(char_code1)
+             result.append(map_UpperCase[UpperCase_List[charA]])
+ 
++
++
++
+         elif re.match('[a-z]', keyword) is not None:
+             char_code2 = ord(keyword) - Lower_CODE
+             charB = int(char_code2)
+             result.append(map_LowerCase[LowerCase_List[charB]])
+ 
+ 
++        elif re.match('[^a-zA-Z0-9]', keyword) is not None:
++            char_code3= ord(keyword) - Symbol_CODE
++            charS= int(char_code3)
++            result.append(map_Symbol[Symbol_List[charS]])
++
++
+ 
+         else:
+             result.append(keyword)
+@@ -66,10 +82,8 @@
+     # result
+     return result
+ 
+-
+ '''if __name__ == '__main__':
+     Inputtext = TableWidget.text
+-
+     result= ko_braile_convertor(Inputtext)
+     return result'''
+ 
+@@ -77,4 +91,3 @@
+ 
+ 
+ 
+-
+Index: .idea/misc.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"ProjectRootManager\" version=\"2\" project-jdk-name=\"Python 3.7\" project-jdk-type=\"Python SDK\" />\r\n  <component name=\"PyCharmProfessionalAdvertiser\">\r\n    <option name=\"shown\" value=\"true\" />\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- .idea/misc.xml	(revision 1bbf1d6e98802b08245cdb173d7c01ba37e16678)
++++ .idea/misc.xml	(date 1588137583230)
+@@ -1,6 +1,6 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+ <project version="4">
+-  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.7" project-jdk-type="Python SDK" />
++  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.7 (Aeye) (2)" project-jdk-type="Python SDK" />
+   <component name="PyCharmProfessionalAdvertiser">
+     <option name="shown" value="true" />
+   </component>
+Index: .idea/untitled.iml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<module type=\"PYTHON_MODULE\" version=\"4\">\r\n  <component name=\"NewModuleRootManager\">\r\n    <content url=\"file://$MODULE_DIR$\">\r\n      <excludeFolder url=\"file://$MODULE_DIR$/venv\" />\r\n    </content>\r\n    <orderEntry type=\"jdk\" jdkName=\"Python 3.7\" jdkType=\"Python SDK\" />\r\n    <orderEntry type=\"sourceFolder\" forTests=\"false\" />\r\n  </component>\r\n</module>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- .idea/untitled.iml	(revision 1bbf1d6e98802b08245cdb173d7c01ba37e16678)
++++ .idea/untitled.iml	(date 1588137583165)
+@@ -4,7 +4,7 @@
+     <content url="file://$MODULE_DIR$">
+       <excludeFolder url="file://$MODULE_DIR$/venv" />
+     </content>
+-    <orderEntry type="jdk" jdkName="Python 3.7" jdkType="Python SDK" />
++    <orderEntry type="jdk" jdkName="Python 3.7 (Aeye) (2)" jdkType="Python SDK" />
+     <orderEntry type="sourceFolder" forTests="false" />
+   </component>
+ </module>
+\ No newline at end of file
