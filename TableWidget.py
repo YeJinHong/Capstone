@@ -6,6 +6,7 @@ from PyQt5.QtGui import *
 import text_extract as te
 import convertor
 
+
 class MyTableWidget(QWidget):
     filename = ""
 
@@ -28,6 +29,7 @@ class MyTableWidget(QWidget):
         self.tabs.addTab(self.tab1, "image -> text")
         self.tabs.addTab(self.tab2, "text -> braille text")
         self.tab1.btn.clicked.connect(self.WriteText)
+        self.tab1.btn.setEnabled(False)
         self.tab2.btn.clicked.connect(self.WriteBraille)
         self.layout.addWidget(self.tabs)
         self.setLayout(self.layout)
@@ -53,22 +55,27 @@ class MyTableWidget(QWidget):
         result = convertor.ko_braile_convertor(text)
         self.tab2.text2.setPlainText(result)
 
+
 class MyWidget(QWidget):
     filename = ""
 
     def __init__(self):
         super().__init__()
 
+
         # 라벨-파일 선택 안내문
         self.label1 = QLabel('입력창', self)
         self.label1.setAlignment(Qt.AlignVCenter)
         self.label2 = QLabel('결과창', self)
-        self.label1.setAlignment(Qt.AlignVCenter)
+        self.label2.setAlignment(Qt.AlignVCenter)
         # 버튼 - 파일 변환창
         self.btn = QPushButton('파일 변환', self)
-        self.btn.setEnabled(False)
+
         # 이미지 출력창
         self.label_picture = QLabel('이미지 출력창', self)
+        self.label_picture.setFixedWidth(400)
+        self.label_picture.setStyleSheet("QLabel { background-color : grey; }")
+        self.label_picture.setAlignment(Qt.AlignCenter)
         # 텍스트 출력창
         self.text1 = QTextEdit()
         self.text2 = QTextEdit()
@@ -78,10 +85,10 @@ class MyWidget(QWidget):
 
         self.grid = QGridLayout()
         self.setLayout(self.grid)
-        self.grid.addWidget(self.label1, 0, 0)
+        self.grid.addWidget(self.label1, 0, 0, Qt.AlignCenter)
         #self.grid.addWidget(self.text1, 1, 0)
         self.grid.addWidget(self.btn, 1, 1)
-        self.grid.addWidget(self.label2, 0, 2)
+        self.grid.addWidget(self.label2, 0, 2, Qt.AlignCenter)
         self.grid.addWidget(self.text2, 1, 2)
         self.grid.addWidget(self.btn_p, 2, 0)
 
@@ -103,15 +110,15 @@ class MyWidget(QWidget):
             hgap = printer.pageRect().height() * 0.1
 
             # 화면 중앙에 위젯 배치
-            xscale = (printer.pageRect().width() - wgap) / self.table.width()
-            yscale = (printer.pageRect().height() - hgap) / self.table.height()
+            xscale = (printer.pageRect().width() - wgap) / self.text2.width()
+            yscale = (printer.pageRect().height() - hgap) / self.text2.height()
             scale = xscale if xscale < yscale else yscale
             qp.translate(printer.paperRect().x() + printer.pageRect().width() / 2,
                          printer.paperRect().y() + printer.pageRect().height() / 2)
             qp.scale(scale, scale);
-            qp.translate(-self.table.width() / 2, -self.table.height() / 2);
+            qp.translate(-self.text2.width() / 2, -self.text2.height() / 2);
 
             # 인쇄
-            self.table.render(qp)
+            self.text2.render(qp)
 
             qp.end()
