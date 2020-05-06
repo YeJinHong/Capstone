@@ -109,15 +109,15 @@ class MyWidget(QWidget):
             hgap = printer.pageRect().height() * 0.1
 
             # 화면 중앙에 위젯 배치
-            xscale = (printer.pageRect().width() - wgap) / self.table.width()
-            yscale = (printer.pageRect().height() - hgap) / self.table.height()
+            xscale = (printer.pageRect().width() - wgap) / self.text2.width()
+            yscale = (printer.pageRect().height() - hgap) / self.text2.height()
             scale = xscale if xscale < yscale else yscale
             qp.translate(printer.paperRect().x() + printer.pageRect().width() / 2,
                          printer.paperRect().y() + printer.pageRect().height() / 2)
             qp.scale(scale, scale);
-            qp.translate(-self.table.width() / 2, -self.table.height() / 2);
+            qp.translate(-self.text2.width() / 2, -self.text2.height() / 2);
 
             # 인쇄
-            self.table.render(qp)
+            self.text2.render(qp)
 
             qp.end()
