@@ -96,25 +96,25 @@ class MyMainWindow(QMainWindow):
         else:
             fname = MyTableWidget.filename
             brailleText = self.table_widget.tab2.text2.toPlainText()
-            f = open(fname, 'wb')
-            f.write(brailleText.encode())
+            f = open(fname, 'wt', encoding="utf-8")
+            f.write(brailleText)
             f.close()
             self.setWindowTitle(fname + ' - Aeye')
             self.statusBar().showMessage("저장됨 : " + fname)
 
     def filesaveas(self):  # 저장할 파일명을 정하는 다이얼로그가 뜨지 않고 지정된 파일에 덮어씌우는 저장
         fname = QFileDialog.getSaveFileName(self, self.tr("다른 이름으로 저장"), "",
-                                            self.tr("점자 파일 (*.bbf *.brf)"))
-        # 다른 확장자를 적거나 확장자를 붙이지 않으면 .bbf가 기본값으로 붙고 .bbf, .brf를 확장자로 적으면 그 확장자로 붙음
-        if fname[0].split(".")[-1] == "" or fname[0].split(".")[-1] == "bbf" or fname[0].split(".")[-1] == "brf":
+                                            self.tr("점자 파일 (*.blb *.blt)"))
+        # 다른 확장자를 적거나 확장자를 붙이지 않으면 .blb가 기본값으로 붙고 .bbf, .blt를 확장자로 적으면 그 확장자로 붙음
+        if fname[0].split(".")[-1] == "" or fname[0].split(".")[-1] == "blb" or fname[0].split(".")[-1] == "blt":
             filename = fname[0]
         else:
-            filename = fname[0] + ".bbf"
+            filename = fname[0] + ".blb"
         MyTableWidget.filename = filename
         brailleText = self.table_widget.tab2.text2.toPlainText()
         if not filename == "":
-            f = open(filename, 'wb')
-            f.write(brailleText.encode())
+            f = open(filename, 'wt', encoding="utf-8")
+            f.write(brailleText)
             f.close()
             self.setWindowTitle(filename + ' - Aeye')
             self.statusBar().showMessage("저장됨 : " + filename)
