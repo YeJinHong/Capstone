@@ -21,8 +21,8 @@ def ImagetoText(fileName):
     image = cv2.fastNlMeansDenoising(image, h=10, searchWindowSize=21, templateWindowSize=7)
     # 이미지를 흰색과 검은색으로 임계 전처리
     image_final = cv2.threshold(image, 0, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)[1]
-    # tesseract 옵션 설정, 언어:한글 (or +영어), psm = 3, 띄어쓰기 보완
-    config = "-l kor+eng --oem 1 --psm 3 -c preserve_interword_spaces=1"
+    # tesseract 옵션 설정, 언어:한글 (+세로쓰기 글자에는 Hangul_vert), psm = 3, 띄어쓰기 보완
+    config = "-l script/Hangul --oem 1 --psm 3 -c preserve_interword_spaces=1"
     # 텍스트 추출
     extracted_text = image_to_string(image_final, config=config)
     if extracted_text == "":  # 텍스트가 없는 이미지이거나 인식이 안 되는 이미지의 경우
