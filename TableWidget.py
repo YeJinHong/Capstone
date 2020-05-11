@@ -54,6 +54,9 @@ class MyTableWidget(QWidget):
         text = self.tab2.text1.toPlainText()
         result = convertor.ko_braile_convertor(text)
         self.tab2.text2.setPlainText(result)
+        bfont = QFont("Braille", 18)
+        self.tab2.text2.setFont(bfont)
+
 
 
 class MyWidget(QWidget):
