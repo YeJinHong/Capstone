@@ -2,7 +2,7 @@ import re
 
 from map.ko_braile_map import *
 
-Symbol_CODE=21
+Symbol_CODE=33
 
 Upper_CODE=65
 Lower_CODE=97
@@ -17,10 +17,7 @@ LowerCase_List=['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p',
 
 UpperCase_List=['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z']
 
-Symbol_List=['!','\"','#','$',
-             '%','&','\'',
-             '(',')','*','+',
-             '-',',','.','/']
+Symbol_List=['!','\"','#','$', '%','&','\'','(',')','*','+','-',',','.','/']
 
 def ko_braile_convertor(sentence):
     sentence = sentence.replace(" ", "/")
@@ -62,7 +59,7 @@ def ko_braile_convertor(sentence):
 
 
         elif re.match('[^ \t\n\r\f\v a-zA-Z0-9]', keyword) is not None:
-            char_code3 = ord(keyword) - Symbol_CODE
+            char_code3=ord(keyword) - Symbol_CODE
             charS = int(char_code3)
             result.append(map_Symbol[Symbol_List[charS]])
 
