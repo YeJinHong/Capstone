@@ -1,7 +1,7 @@
 import re
 
 from map.ko_braile_map import *
-from map.ko_braille_map_unicode import *
+from map.ko_braille_map_ASCII import *
 
 Symbol_CODE=33
 
