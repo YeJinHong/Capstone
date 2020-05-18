@@ -150,6 +150,13 @@ temp_LowerCase_B=[chr(int('2801', 16)),
                   chr(int('2835', 16))
                   ]
 
+#약어 - 라, 아, 차는 약어가 없으므로 풀어쓴 문자로 대체
+temp_abbreviation = ['가', '나', '다', '라', '마', '바', '사', '아', '자', '차', '카', '타', '파', '하']
+temp_abbreviation_B = ['$', 'C', 'I', '1<', 'E', '^', 'L', 'G<', '.', 'H<', 'F', 'H', 'D', 'J']
+
+temp_abbreviation_jungjongsung = ["ㅓㄱ", "ㅓㄴ", "ㅓㄹ", "ㅕㄴ", "ㅕㄹ", "ㅕㅇ", "ㅗㄱ",
+                                  "ㅗㄴ", "ㅗㅇ", "ㅜㄴ", "ㅜㄹ", "ㅡㄴ", "ㅡㄹ", "ㅣㄴ", "것"]
+temp_abbreviation_jungjongsung_B = ['?', ')', 'T', '*', '\\', ']', 'X', '(', '=', 'G', '&', 'Z', '!', 'Q', '_S']
 
 #construct mapping_dict
 map_chosung = defaultdict()
@@ -161,6 +168,9 @@ map_UpperCase = defaultdict()
 map_LowerCase = defaultdict()
 
 map_Symbol = defaultdict()
+
+map_abbreviation = defaultdict()
+map_jungjongsung_abbreviation = defaultdict()
 
 for idx, sung in enumerate(temp_jongsung):
     map_jongsung[sung]=temp_jongsung_B[idx]
@@ -183,3 +193,9 @@ for idx, low in enumerate(temp_LowerCase):
 
 for idx, sym in enumerate(temp_symbol):
     map_Symbol[sym] = temp_symbol_B[idx]
+
+for idx, abb in enumerate(temp_abbreviation):
+    map_abbreviation[abb]=temp_abbreviation_B[idx]
+
+for idx, j_abb in enumerate(temp_abbreviation_jungjongsung):
+    map_abbreviation[j_abb] = temp_abbreviation_jungjongsung_B[idx]

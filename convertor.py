@@ -25,7 +25,7 @@ def ko_braile_convertor(sentence):
 
     split_keyword_list = list(sentence) #원문장 출력부분
 
-    #print(split_keyword_list)
+    print(split_keyword_list)
 
 
     result = list()
@@ -35,8 +35,10 @@ def ko_braile_convertor(sentence):
             char_code = ord(keyword) - BASE_CODE
             char1 = int(char_code / CHOSUNG)
             result.append(map_chosung[CHOSUNG_LIST[char1]])
+
             char2 = int((char_code - (CHOSUNG * char1)) / JUNGSUNG)
             result.append(map_jungsung[JUNGSUNG_LIST[char2]])
+
             char3 = int((char_code - (CHOSUNG * char1) - (JUNGSUNG * char2)))
             result.append(map_jongsung[JONGSUNG_LIST[char3]])
 
@@ -78,10 +80,28 @@ def ko_braile_convertor(sentence):
     # result
     return result
 
-'''if __name__ == '__main__':
-    Inputtext = TableWidget.text
-    result= ko_braile_convertor(Inputtext)
-    return result'''
+def convertor(sentence):
+    split_keyword_list = list(sentence)  # 원문장 출력부분
+
+    print(split_keyword_list)
+    result = list();
+    for keyword in split_keyword_list:
+        # 한글 여부 check 후 분리
+        if re.match('[가-하]', keyword) is not None:
+                result.append(map_abbreviation[keyword])
+        else:
+            result.append(keyword)
+
+
+    result = "".join(result)
+    result = result.replace(" ", "")
+    result = result.replace("/", " ")
+    return result
+
+
+if __name__ == '__main__':
+    result= convertor("가나다라")
+    print(result)
 
 
 
