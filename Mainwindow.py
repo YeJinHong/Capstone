@@ -79,8 +79,7 @@ class MyMainWindow(QMainWindow):
 
     def fileopen(self):
         fname = QFileDialog.getOpenFileName(self, self.tr("열기"), "",
-                                            self.tr("이미지 파일 (*.jpg *.jpeg *.bmp *.png);;"
-                                                    "문서 파일 (*.txt *.docx *.pdf *.hwp *.pptx)"))
+                                            self.tr("이미지/문서 파일 (*.jpg *.jpeg *.bmp *.png *.txt *.docx *.pdf *.hwp *.pptx)"))
         MyTableWidget.filename = fname[0]
         if not fname[0] == "":
             self.setWindowTitle(fname[0]+' - Aeye')
@@ -104,17 +103,29 @@ class MyMainWindow(QMainWindow):
 
     def filesaveas(self):  # 저장할 파일명을 정하는 다이얼로그가 뜨지 않고 지정된 파일에 덮어씌우는 저장
         fname = QFileDialog.getSaveFileName(self, self.tr("다른 이름으로 저장"), "",
-                                            self.tr("출력용 점자 문서 파일 (*.bbf *.brf)"))
-        # 다른 확장자를 적거나 확장자를 붙이지 않으면 .blb가 기본값으로 붙고 .bbf, .brf를 확장자로 적으면 그 확장자로 붙음
-        if fname[0].split(".")[-1] == "" or fname[0].split(".")[-1] == "bbf" or fname[0].split(".")[-1] == "brf":
+                                            self.tr("출력용 점자 문서 파일 (*.bbf *.brf *.brl)"))
+        # 다른 확장자를 적거나 확장자를 붙이지 않으면 .bbf가 기본값으로 붙고 .bbf, .brf, .brl을 확장자로 적으면 그 확장자로 붙음
+        if fname[0].split(".")[-1] == "" or fname[0].split(".")[-1] == "bbf" or fname[0].split(".")[-1] == "brf" \
+                                        or fname[0].split(".")[-1] == "brl":
             filename = fname[0]
         else:
             filename = fname[0] + ".bbf"
         MyTableWidget.filename = filename
         brailleText = self.table_widget.tab2.text2.toPlainText()
+        # 페이지 목차
+        newPageNum="#"
+        numtostr={"1":"a", "2":"b", "3":"c", "4":"d", "5":"e", "6":"f", "7":"g", "8":"h", "9":"i", "0":"j"}
+
+        braillelist = brailleText.splitlines()
+        length = 31
+        newbraille = ""
+        for j in range(len(braillelist)):
+            newLine = [(braillelist[j])[i:i + length] for i in range(0, len(braillelist[j]), length)]
+            newbraille += '\n'.join(newLine)
+            newbraille += '\n'
         if not filename == "":
             f = open(filename, 'wt', encoding="utf-8")
-            f.write(brailleText)
+            f.write(newbraille)
             f.close()
             self.setWindowTitle(filename + ' - Aeye')
             self.statusBar().showMessage("저장됨 : " + filename)
