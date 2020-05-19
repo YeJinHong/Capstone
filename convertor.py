@@ -1,6 +1,7 @@
 import re
 
 from map.ko_braile_map import *
+from map.ko_braille_map_ASCII import *
 
 Symbol_CODE=33
 
@@ -81,9 +82,13 @@ def ko_braile_convertor(sentence):
     return result
 
 def convertor(sentence):
-    split_keyword_list = list(sentence)  # 원문장 출력부분
+    # 어절 분할
+    word_list = sentence.split()
 
+    # 음절 분할
+    split_keyword_list = list(sentence)
     print(split_keyword_list)
+
     result = list();
     for keyword in split_keyword_list:
         # 한글 여부 check 후 분리
@@ -100,7 +105,7 @@ def convertor(sentence):
 
 
 if __name__ == '__main__':
-    result= convertor("가나다라")
+    result= convertor("가나다 라마바")
     print(result)
 
 
