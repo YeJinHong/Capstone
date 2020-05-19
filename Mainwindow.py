@@ -4,6 +4,7 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import Qt, pyqtSlot
 from TableWidget import *
 
+
 class MyMainWindow(QMainWindow):
     # save와 save as를 구별하기 위함
     # (True:이미 저장된 파일이 있어 거기에 덮어씌우는 경우/False:처음 저장하는 거라 이름을 지정해줘야 하는 경우)
@@ -19,7 +20,7 @@ class MyMainWindow(QMainWindow):
 
     def initUI(self):
         self.components()
-        self.setWindowTitle("새 파일 " + str(n) +' - Aeye')
+        self.setWindowTitle("새 파일 " + str(n) + ' - Aeye')
         self.setWindowIcon(QIcon('Aeyeicon.png'))
         self.resize(1000, 800)
         self.statusBar()
@@ -79,10 +80,11 @@ class MyMainWindow(QMainWindow):
 
     def fileopen(self):
         fname = QFileDialog.getOpenFileName(self, self.tr("열기"), "",
-                                            self.tr("이미지/문서 파일 (*.jpg *.jpeg *.bmp *.png *.txt *.docx *.pdf *.hwp *.pptx)"))
+                                            self.tr(
+                                                "이미지/문서 파일 (*.jpg *.jpeg *.bmp *.png *.txt *.docx *.pdf *.hwp *.pptx)"))
         MyTableWidget.filename = fname[0]
         if not fname[0] == "":
-            self.setWindowTitle(fname[0]+' - Aeye')
+            self.setWindowTitle(fname[0] + ' - Aeye')
             self.statusBar().showMessage("열림 : " + fname[0])
         self.table_widget.PreView()
         # 파일 변환 버튼에 접근하여 파일을 불러오고 난 후에 버튼 활성화될 수 있게
@@ -94,29 +96,41 @@ class MyMainWindow(QMainWindow):
             self.filesaveas()
         else:
             fname = MyTableWidget.filename
+            global count
             brailleText = self.table_widget.tab2.text2.toPlainText()
             # 페이지 줄바꿈 (32글자가 한 라인)
-            braillelist = brailleText.splitlines()
-            newbraille = ""
-            for j in range(len(braillelist)):
+            braillelist = brailleText.splitlines()  # '\n' 단위로 리스트화
+            newbraille = ""  # 32자 단위로 자른 텍스트를 저장할 곳
+            for j in range(len(braillelist)):  # 32자 단위로 잘라서 '\n'으로 연결
                 newLine = [(braillelist[j])[i:i + 32] for i in range(0, len(braillelist[j]), 32)]
                 newbraille += '\n'.join(newLine)
                 newbraille += '\n'
             # 페이지 목차 (26라인이 한 페이지이지만 마지막 라인은 공백+목차이므로 25줄 단위로 카운트)
-            numtostr = {"1": "a", "2": "b", "3": "c", "4": "d", "5": "e", "6": "f", "7": "g", "8": "h", "9": "i",
-                        "0": "j"}
-            linenumber = newbraille.count('\n')
-            pagelist = newbraille.splitlines()
-
-            for i in range(linenumber):
+            numtostr = {"1": "a", "2": "b", "3": "c", "4": "d", "5": "e",
+                        "6": "f", "7": "g", "8": "h", "9": "i", "0": "j"}  # 목차에서는 0,1...9가 j,a...i로 치환되어 표시됨
+            linenumber = newbraille.count('\n')  # 몇 줄인지 카운트
+            pagelist = newbraille.splitlines()  # 32자 단위로 잘라서 하나로 합쳐둔 텍스트를 다시 '\n' 단위로 리스트화
+            lastpage = ""
+            count = 0
+            for i in range(1, linenumber):  # 25줄 단위로 자르고 26줄째에는 공백+목차 줄 삽입
                 pagenum = ""
-                stringnum = str(int(i / 25))
+                stringnum = str(int(i / 25))  # 25줄 당 1페이지
                 if i != 0 and i % 25 == 0:
                     for j in range(len(stringnum)):
-                        pagenum += numtostr[stringnum[j]]
-                    pagelist.insert(i, '%32s' % ('#' + pagenum))
-                if i > 25 and i % 25 == 1:
+                        pagenum += numtostr[stringnum[j]]  # 숫자로 된 목차를 위에 있는 numtostr를 이용해 알파벳으로 치환
+                    pagelist.insert(i + (int(i / 25) - 1),
+                                    '%32s' % ('#' + pagenum))  # 26번째 줄은 32칸에서 오른쪽부터 #+목차를 채우고 나머지는 공백으로 채움
+                    count = i + int(i / 25)
+                elif i == count:
                     pagelist[i] = '' + pagelist[i]
+                if i % 25 != 0 and i == linenumber - 1:
+                    for j in range(len(str(int(i / 25) + 1))):
+                        lastpage += numtostr[str(int(i / 25) + 1)[j]]
+            if not linenumber % 25 == 0:  # 마지막 페이지에 줄이 남으면 공백 채우기
+                for i in range(0, 25 - (linenumber % 25)):
+                    pagelist.append('')
+            pagelist.append('%32s' % ('#' + lastpage))
+            pagelist.append('')
 
             if not fname == "":
                 f = open(fname, 'wt', encoding="utf-8")
@@ -124,39 +138,53 @@ class MyMainWindow(QMainWindow):
                 f.close()
                 self.setWindowTitle(fname + ' - Aeye')
                 self.statusBar().showMessage("저장됨 : " + fname)
+                self.savestate = True
 
     def filesaveas(self):  # 저장할 파일명을 정하는 다이얼로그가 뜨지 않고 지정된 파일에 덮어씌우는 저장
+        global count
         fname = QFileDialog.getSaveFileName(self, self.tr("다른 이름으로 저장"), "",
                                             self.tr("출력용 점자 문서 파일 (*.bbf *.brf *.brl)"))
         # 다른 확장자를 적거나 확장자를 붙이지 않으면 .bbf가 기본값으로 붙고 .bbf, .brf, .brl을 확장자로 적으면 그 확장자로 붙음
         if fname[0].split(".")[-1] == "" or fname[0].split(".")[-1] == "bbf" or fname[0].split(".")[-1] == "brf" \
-                                        or fname[0].split(".")[-1] == "brl":
+                or fname[0].split(".")[-1] == "brl":
             filename = fname[0]
         else:
             filename = fname[0] + ".bbf"
         MyTableWidget.filename = filename
         brailleText = self.table_widget.tab2.text2.toPlainText()
         # 페이지 줄바꿈 (32글자가 한 라인)
-        braillelist = brailleText.splitlines()
-        newbraille = ""
-        for j in range(len(braillelist)):
+        braillelist = brailleText.splitlines()  # '\n' 단위로 리스트화
+        newbraille = ""  # 32자 단위로 자른 텍스트를 저장할 곳
+        for j in range(len(braillelist)):  # 32자 단위로 잘라서 '\n'으로 연결
             newLine = [(braillelist[j])[i:i + 32] for i in range(0, len(braillelist[j]), 32)]
             newbraille += '\n'.join(newLine)
             newbraille += '\n'
         # 페이지 목차 (26라인이 한 페이지이지만 마지막 라인은 공백+목차이므로 25줄 단위로 카운트)
-        numtostr = {"1": "a", "2": "b", "3": "c", "4": "d", "5": "e", "6": "f", "7": "g", "8": "h", "9": "i", "0": "j"}
-        linenumber = newbraille.count('\n')
-        pagelist = newbraille.splitlines()
-
-        for i in range(linenumber):
+        numtostr = {"1": "a", "2": "b", "3": "c", "4": "d", "5": "e",
+                    "6": "f", "7": "g", "8": "h", "9": "i", "0": "j"}  # 목차에서는 0,1...9가 j,a...i로 치환되어 표시됨
+        linenumber = newbraille.count('\n')  # 몇 줄인지 카운트
+        pagelist = newbraille.splitlines()  # 32자 단위로 잘라서 하나로 합쳐둔 텍스트를 다시 '\n' 단위로 리스트화
+        lastpage = ""
+        count = 0
+        for i in range(1, linenumber):  # 25줄 단위로 자르고 26줄째에는 공백+목차 줄 삽입
             pagenum = ""
-            stringnum = str(int(i/25))
+            stringnum = str(int(i / 25))  # 25줄 당 1페이지
             if i != 0 and i % 25 == 0:
                 for j in range(len(stringnum)):
-                    pagenum += numtostr[stringnum[j]]
-                pagelist.insert(i, '%32s' % ('#'+pagenum))
-            if i > 25 and i % 25 == 1:
-                pagelist[i] = ''+pagelist[i]
+                    pagenum += numtostr[stringnum[j]]  # 숫자로 된 목차를 위에 있는 numtostr를 이용해 알파벳으로 치환
+                pagelist.insert(i + (int(i / 25) - 1),
+                                '%32s' % ('#' + pagenum))  # 26번째 줄은 32칸에서 오른쪽부터 #+목차를 채우고 나머지는 공백으로 채움
+                count = i + int(i / 25)
+            elif i == count:
+                pagelist[i] = '' + pagelist[i]
+            if i % 25 != 0 and i == linenumber - 1:
+                for j in range(len(str(int(i / 25) + 1))):
+                    lastpage += numtostr[str(int(i / 25) + 1)[j]]
+        if not linenumber % 25 == 0:  # 마지막 페이지에 줄이 남으면 공백 채우기
+            for i in range(0, 25 - (linenumber % 25)):
+                pagelist.append('')
+        pagelist.append('%32s' % ('#' + lastpage))
+        pagelist.append('')
 
         if not filename == "":
             f = open(filename, 'wt', encoding="utf-8")
