@@ -57,8 +57,6 @@ temp_number_B = ["".join(["#","J"]),
                  "".join(["#","G"]),
                  "".join(["#","H"]),
                  "".join(["#","I"]),
-
-
                  ]
 
 temp_UpperCase = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"]
