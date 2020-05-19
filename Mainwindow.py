@@ -95,11 +95,35 @@ class MyMainWindow(QMainWindow):
         else:
             fname = MyTableWidget.filename
             brailleText = self.table_widget.tab2.text2.toPlainText()
-            f = open(fname, 'wt', encoding="utf-8")
-            f.write(brailleText)
-            f.close()
-            self.setWindowTitle(fname + ' - Aeye')
-            self.statusBar().showMessage("저장됨 : " + fname)
+            # 페이지 줄바꿈 (32글자가 한 라인)
+            braillelist = brailleText.splitlines()
+            newbraille = ""
+            for j in range(len(braillelist)):
+                newLine = [(braillelist[j])[i:i + 32] for i in range(0, len(braillelist[j]), 32)]
+                newbraille += '\n'.join(newLine)
+                newbraille += '\n'
+            # 페이지 목차 (26라인이 한 페이지이지만 마지막 라인은 공백+목차이므로 25줄 단위로 카운트)
+            numtostr = {"1": "a", "2": "b", "3": "c", "4": "d", "5": "e", "6": "f", "7": "g", "8": "h", "9": "i",
+                        "0": "j"}
+            linenumber = newbraille.count('\n')
+            pagelist = newbraille.splitlines()
+
+            for i in range(linenumber):
+                pagenum = ""
+                stringnum = str(int(i / 25))
+                if i != 0 and i % 25 == 0:
+                    for j in range(len(stringnum)):
+                        pagenum += numtostr[stringnum[j]]
+                    pagelist.insert(i, '%32s' % ('#' + pagenum))
+                if i > 25 and i % 25 == 1:
+                    pagelist[i] = '' + pagelist[i]
+
+            if not fname == "":
+                f = open(fname, 'wt', encoding="utf-8")
+                f.write('\n'.join(pagelist))
+                f.close()
+                self.setWindowTitle(fname + ' - Aeye')
+                self.statusBar().showMessage("저장됨 : " + fname)
 
     def filesaveas(self):  # 저장할 파일명을 정하는 다이얼로그가 뜨지 않고 지정된 파일에 덮어씌우는 저장
         fname = QFileDialog.getSaveFileName(self, self.tr("다른 이름으로 저장"), "",
@@ -112,20 +136,31 @@ class MyMainWindow(QMainWindow):
             filename = fname[0] + ".bbf"
         MyTableWidget.filename = filename
         brailleText = self.table_widget.tab2.text2.toPlainText()
-        # 페이지 목차
-        newPageNum="#"
-        numtostr={"1":"a", "2":"b", "3":"c", "4":"d", "5":"e", "6":"f", "7":"g", "8":"h", "9":"i", "0":"j"}
-
+        # 페이지 줄바꿈 (32글자가 한 라인)
         braillelist = brailleText.splitlines()
-        length = 31
         newbraille = ""
         for j in range(len(braillelist)):
-            newLine = [(braillelist[j])[i:i + length] for i in range(0, len(braillelist[j]), length)]
+            newLine = [(braillelist[j])[i:i + 32] for i in range(0, len(braillelist[j]), 32)]
             newbraille += '\n'.join(newLine)
             newbraille += '\n'
+        # 페이지 목차 (26라인이 한 페이지이지만 마지막 라인은 공백+목차이므로 25줄 단위로 카운트)
+        numtostr = {"1": "a", "2": "b", "3": "c", "4": "d", "5": "e", "6": "f", "7": "g", "8": "h", "9": "i", "0": "j"}
+        linenumber = newbraille.count('\n')
+        pagelist = newbraille.splitlines()
+
+        for i in range(linenumber):
+            pagenum = ""
+            stringnum = str(int(i/25))
+            if i != 0 and i % 25 == 0:
+                for j in range(len(stringnum)):
+                    pagenum += numtostr[stringnum[j]]
+                pagelist.insert(i, '%32s' % ('#'+pagenum))
+            if i > 25 and i % 25 == 1:
+                pagelist[i] = ''+pagelist[i]
+
         if not filename == "":
             f = open(filename, 'wt', encoding="utf-8")
-            f.write(newbraille)
+            f.write('\n'.join(pagelist))
             f.close()
             self.setWindowTitle(filename + ' - Aeye')
             self.statusBar().showMessage("저장됨 : " + filename)
