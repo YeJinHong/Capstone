@@ -2,7 +2,8 @@ import sys
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import Qt, pyqtSlot
-import TableWidget
+from TableWidget import *
+import braille_standard as bs
 
 
 class MyMainWindow(QMainWindow):
@@ -20,7 +21,7 @@ class MyMainWindow(QMainWindow):
 
     def initUI(self):
         self.components()
-        self.setWindowTitle("새 파일 " + str(n) +' - Aeye')
+        self.setWindowTitle("새 파일 " + str(n) + ' - Aeye')
         self.setWindowIcon(QIcon('Aeyeicon.png'))
         self.resize(1000, 800)
         self.statusBar()
@@ -62,7 +63,7 @@ class MyMainWindow(QMainWindow):
         filesaveasAction.setShortcut('Ctrl+Shift+S')
         filesaveasAction.setStatusTip('내 PC에 파일을 다른 이름으로 저장합니다.')
         # 점자 변환 칸 (tab2.text2)에 내용이 들어가기 전까진 오류 방지를 위해 저장 안 되게
-        # filesaveAction.setEnabled(False)
+        # filesaveasAction.setEnabled(False)
         filesaveasAction.triggered.connect(self.filesaveas)
         filemenu.addAction(filesaveasAction)
         # 종료
@@ -80,41 +81,48 @@ class MyMainWindow(QMainWindow):
 
     def fileopen(self):
         fname = QFileDialog.getOpenFileName(self, self.tr("열기"), "",
-                                            self.tr("이미지 파일 (*.jpg *.jpeg *.bmp *.png);;"
-                                                    "문서 파일 (*.txt *.docx *.pdf *.hwp *.pptx)"))
-        TableWidget.MyTableWidget.filename = fname[0]
+                                            self.tr(
+                                                "이미지/문서 파일 (*.jpg *.jpeg *.bmp *.png *.txt *.docx *.pdf *.hwp *.pptx)"))
+        MyTableWidget.filename = fname[0]
         if not fname[0] == "":
-            self.setWindowTitle(fname[0]+' - Aeye')
+            self.setWindowTitle(fname[0] + ' - Aeye')
             self.statusBar().showMessage("열림 : " + fname[0])
         self.table_widget.PreView()
-        # btn2 버튼에 접근하여 파일을 불러오고 난 후에 버튼 활성화될 수 있게
-        # MyWidget().btn.setEnabled(True)
+        # 파일 변환 버튼에 접근하여 파일을 불러오고 난 후에 버튼 활성화될 수 있게
+        self.table_widget.tab1.btn.setEnabled(True)
+        self.table_widget.tab2.btn.setEnabled(True)
 
     def filesave(self):  # 맨 처음의 저장 (다른 이름으로 저장이랑 같은 기능)
         if not self.savestate:
             self.filesaveas()
         else:
-            fname = TableWidget.MyTableWidget.filename
-            brailleText = "점자 변환 메소드가 구현되고 나면 점자로 변환된 내용을 여기로 불러와 유니코드로 작성합니다. 이건 저장"
-            f = open(fname, 'wb')
-            f.write(brailleText.encode())
-            f.close()
-            self.setWindowTitle(fname + ' - Aeye')
-            self.statusBar().showMessage("저장됨 : " + fname)
+            fname = MyTableWidget.filename
+            brailleText = self.table_widget.tab2.text2.toPlainText()
+            pagelist = bs.standard(brailleText)
+            if not fname == "":
+                f = open(fname, 'wt', encoding="utf-8")
+                f.write('\n'.join(pagelist))
+                f.close()
+                self.setWindowTitle(fname + ' - Aeye')
+                self.statusBar().showMessage("저장됨 : " + fname)
+                self.savestate = True
 
     def filesaveas(self):  # 저장할 파일명을 정하는 다이얼로그가 뜨지 않고 지정된 파일에 덮어씌우는 저장
-        brailleText = "점자 변환 메소드가 구현되고 나면 점자로 변환된 내용을 여기로 불러와 유니코드로 작성합니다. 이건 다른이름 저장"
+        global count
         fname = QFileDialog.getSaveFileName(self, self.tr("다른 이름으로 저장"), "",
-                                            self.tr("점자 파일 (*.bbf *.brf)"))
-        # 다른 확장자를 적거나 확장자를 붙이지 않으면 .bbf가 기본값으로 붙고 .bbf, .brf를 확장자로 적으면 그 확장자로 붙음
-        if fname[0].split(".")[-1] == "" or fname[0].split(".")[-1] == "bbf" or fname[0].split(".")[-1] == "brf":
+                                            self.tr("출력용 점자 문서 파일 (*.bbf *.brf *.brl)"))
+        # 다른 확장자를 적거나 확장자를 붙이지 않으면 .bbf가 기본값으로 붙고 .bbf, .brf, .brl을 확장자로 적으면 그 확장자로 붙음
+        if fname[0].split(".")[-1] == "" or fname[0].split(".")[-1] == "bbf" or fname[0].split(".")[-1] == "brf" \
+                or fname[0].split(".")[-1] == "brl":
             filename = fname[0]
         else:
             filename = fname[0] + ".bbf"
-        TableWidget.MyTableWidget.filename = filename
+        MyTableWidget.filename = filename
+        brailleText = self.table_widget.tab2.text2.toPlainText()
+        pagelist = bs.standard(brailleText)
         if not filename == "":
-            f = open(filename, 'wb')
-            f.write(brailleText.encode())
+            f = open(filename, 'wt', encoding="utf-8")
+            f.write('\n'.join(pagelist))
             f.close()
             self.setWindowTitle(filename + ' - Aeye')
             self.statusBar().showMessage("저장됨 : " + filename)
@@ -122,7 +130,7 @@ class MyMainWindow(QMainWindow):
 
     def components(self):
         # wg = MyWidget()
-        self.table_widget = TableWidget.MyTableWidget(self)
+        self.table_widget = MyTableWidget(self)
         self.setCentralWidget(self.table_widget)
 
 

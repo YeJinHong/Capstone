@@ -4,6 +4,7 @@ from collections import defaultdict
 temp_chosung = ["ㄱ","ㄲ","ㄴ","ㄷ","ㄸ","ㄹ","ㅁ","ㅂ","ㅃ","ㅅ","ㅆ","ㅇ","ㅈ","ㅉ","ㅊ","ㅋ","ㅌ","ㅍ","ㅎ"]
 temp_chosung_B = ["@",",@","C","I",",I","\"","E","^",",^",",",",,","G",".",",.",";", "F","H","D","J"]
 
+
 #중성
 temp_jungsung = ["ㅏ","ㅐ","ㅑ","ㅒ","ㅓ","ㅔ","ㅕ","ㅖ","ㅗ","ㅘ","ㅙ","ㅚ","ㅛ","ㅜ","ㅝ","ㅞ","ㅟ","ㅠ","ㅡ","ㅢ","ㅣ"]
 temp_jungsung_B = ["<","R", ">",">R","S ","N", ":","/","U", "V","VR","Y","+","M", "P","PR","MR", "%","[","W","O"]
@@ -23,13 +24,16 @@ temp_symbol = ["!","\"","#","$",
 temp_symbol_B = ["6","8","#","$","0P","&",",8","8'",",0","*","5","\"","_","4","_/",
             "\"1",";2","\"8","33","01","8","@","82","\\","^","_","@","81","\"0","^" ]
 
+
 temp_number = [0,1,2,3,4,5,6,7,8,9]
+
 temp_number_B = ["#J","#A","#B","#C","#D","#E","#F","#G","#H","#I"]
 
 temp_UpperCase = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N",
                   "O","P","Q","R","S","T","U","V","W","X","Y","Z"]
 temp_UpperCase_B=[",A",",B",",C",",D",",E",",F",",G",",H",",I",",J",",K",",L",",M",",N",",O",
                   ",P",",Q",",R",",S",",T",",U",",V",",W",",X",",Y",",Z"]
+
 
 temp_LowerCase=["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"]
 temp_LowerCase_B=["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z" ]
@@ -52,7 +56,6 @@ for idx, sung in enumerate(temp_jongsung):
     map_jongsung[sung]=temp_jongsung_B[idx]
 map_jongsung[" "]=""
 
-#중성
 for idx, sung in enumerate(temp_jungsung):
     map_jungsung[sung]=temp_jungsung_B[idx]
 

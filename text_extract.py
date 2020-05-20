@@ -1,11 +1,11 @@
 # test_extract.py
 
+import subprocess # pip install --pre pyhwp
 from pytesseract import *  # pip install pytesseract
 import cv2  # pip install opencv-python
 import docx2txt  # pip install docx2txt
 import pdfplumber  # pip install pdfplumber
 from pptx import Presentation  # pip install python-pptx
-import ole  # pip install ole-py
 
 # 확장자별로 이미지를 불러오는 방식을 다르게 함
 
@@ -21,8 +21,8 @@ def ImagetoText(fileName):
     image = cv2.fastNlMeansDenoising(image, h=10, searchWindowSize=21, templateWindowSize=7)
     # 이미지를 흰색과 검은색으로 임계 전처리
     image_final = cv2.threshold(image, 0, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)[1]
-    # tesseract 옵션 설정, 언어:한글 (or +영어), psm = 3, 띄어쓰기 보완
-    config = "-l kor+eng --oem 1 --psm 3 -c preserve_interword_spaces=1"
+    # tesseract 옵션 설정, 언어:한글 (+세로쓰기 글자에는 Hangul_vert), psm = 3, 띄어쓰기 보완
+    config = "-l kor --oem 1 --psm 3 -c preserve_interword_spaces=1"
     # 텍스트 추출
     extracted_text = image_to_string(image_final, config=config)
     if extracted_text == "":  # 텍스트가 없는 이미지이거나 인식이 안 되는 이미지의 경우
@@ -66,13 +66,12 @@ def PptxtoText(fileName):
                 continue
             for paragraph in shape.text_frame.paragraphs:
                 extracted_text += "".join(paragraph.text)+"\n"
-
     return extracted_text
 
 # hwp 파일에만 사용되는 함수
 def HwptoText(fileName):
-    text = ole.open(fileName)
-    extracted_text = text.get_stream('PrvText').read().decode('utf-16le')
+    text = subprocess.check_output(['hwp5txt', fileName])
+    extracted_text = text.decode("utf-8")
     return extracted_text
 
 def ReturnText(fileName):  # switch 문이 없어서 우선 if-else로 작성
