@@ -82,9 +82,6 @@ class MyWidget(QWidget):
         # 텍스트 출력창
         self.text1 = QTextEdit()
         self.text2 = QTextEdit()
-        #버튼 - 프린터 생성
-        self.btn_p = QPushButton('Print PDF File', self)
-        self.btn_p.clicked.connect(self.btnClickPrint)
 
         self.grid = QGridLayout()
         self.setLayout(self.grid)
@@ -93,35 +90,8 @@ class MyWidget(QWidget):
         self.grid.addWidget(self.btn, 1, 1)
         self.grid.addWidget(self.label2, 0, 2, Qt.AlignCenter)
         self.grid.addWidget(self.text2, 1, 2)
-        self.grid.addWidget(self.btn_p, 2, 0)
 
         self.setGeometry(300, 100, 350, 150)
         #self.setWindowTitle("QWidget")
         self.show()
 
-    # 프린터 생성, 실행
-    def btnClickPrint(self):
-        printer = QPrinter()
-        dlg = QPrintDialog(printer, self)
-        if dlg.exec() == QDialog.Accepted:
-            #Painter 생성
-            qp = QPainter()
-            qp.begin(printer)
-
-            # 여백 비율
-            wgap = printer.pageRect().width() * 0.1
-            hgap = printer.pageRect().height() * 0.1
-
-            # 화면 중앙에 위젯 배치
-            xscale = (printer.pageRect().width() - wgap) / self.text2.width()
-            yscale = (printer.pageRect().height() - hgap) / self.text2.height()
-            scale = xscale if xscale < yscale else yscale
-            qp.translate(printer.paperRect().x() + printer.pageRect().width() / 2,
-                         printer.paperRect().y() + printer.pageRect().height() / 2)
-            qp.scale(scale, scale);
-            qp.translate(-self.text2.width() / 2, -self.text2.height() / 2);
-
-            # 인쇄
-            self.text2.render(qp)
-
-            qp.end()

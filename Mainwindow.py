@@ -16,11 +16,13 @@ class MyMainWindow(QMainWindow):
 
     def __init__(self):
         super().__init__()
+        self.table_widget = MyTableWidget(self)
+        self.setCentralWidget(self.table_widget)
+        self.toolbar = self.addToolBar('ToolBar')
         self.initUI()
         self.initmenu()
 
     def initUI(self):
-        self.components()
         self.setWindowTitle("새 파일 " + str(n) + ' - Aeye')
         self.setWindowIcon(QIcon('Aeyeicon.png'))
         self.resize(1000, 800)
@@ -38,20 +40,24 @@ class MyMainWindow(QMainWindow):
         menubar = self.menuBar()
         menubar.setNativeMenuBar(False)
         filemenu = menubar.addMenu('&File')
+        fileedit = menubar.addMenu('&Edit')
+        filetranslate = menubar.addMenu('&Translate')
+        filedocument = menubar.addMenu('&Document')
+
         # 새로 만들기
-        newfileAction = QAction(QIcon('exit.png'), '새로 만들기', self)
+        newfileAction = QAction(QIcon('img/new.png'), '새로 만들기', self)
         newfileAction.setShortcut('Ctrl+N')
         newfileAction.setStatusTip('새 창을 엽니다.')
         newfileAction.triggered.connect(self.newfile)
         filemenu.addAction(newfileAction)
         # 열기
-        fileopenAction = QAction(QIcon('exit.png'), '열기', self)
+        fileopenAction = QAction(QIcon('img/open.png'), '열기', self)
         fileopenAction.setShortcut('Ctrl+O')
         fileopenAction.setStatusTip('내 PC에서 파일을 불러옵니다.')
         fileopenAction.triggered.connect(self.fileopen)
         filemenu.addAction(fileopenAction)
         # 저장
-        filesaveAction = QAction(QIcon('exit.png'), '저장', self)
+        filesaveAction = QAction(QIcon('img/save.png'), '저장', self)
         filesaveAction.setShortcut('Ctrl+S')
         filesaveAction.setStatusTip('내 PC에 파일을 저장합니다.')
         filesaveAction.triggered.connect(self.filesave)
@@ -59,7 +65,7 @@ class MyMainWindow(QMainWindow):
         # filesaveAction.setEnabled(False)
         filemenu.addAction(filesaveAction)
         # 다른 이름으로 저장
-        filesaveasAction = QAction(QIcon('exit.png'), '다른 이름으로 저장', self)
+        filesaveasAction = QAction('다른 이름으로 저장', self)
         filesaveasAction.setShortcut('Ctrl+Shift+S')
         filesaveasAction.setStatusTip('내 PC에 파일을 다른 이름으로 저장합니다.')
         # 점자 변환 칸 (tab2.text2)에 내용이 들어가기 전까진 오류 방지를 위해 저장 안 되게
@@ -67,11 +73,26 @@ class MyMainWindow(QMainWindow):
         filesaveasAction.triggered.connect(self.filesaveas)
         filemenu.addAction(filesaveasAction)
         # 종료
-        exitAction = QAction(QIcon('exit.png'), '종료', self)
+        exitAction = QAction(QIcon('img/exit.png'), "종료", self)
         exitAction.setShortcut('Ctrl+Q')
         exitAction.setStatusTip('프로그램을 종료합니다.')
         exitAction.triggered.connect(qApp.quit)
         filemenu.addAction(exitAction)
+        #프린트 버튼
+        printAction = QAction(QIcon('img/print.png'), "인쇄", self)
+        printAction.setShortcut('Ctrl+P')
+        printAction.setStatusTip('점역결과를 프린터합니다.')
+        printAction.triggered.connect(self.Print)
+        filemenu.addAction(printAction)
+
+        #툴바 만들기
+        self.statusBar()
+
+        self.toolbar.addAction(newfileAction)
+        self.toolbar.addAction(fileopenAction)
+        self.toolbar.addAction(filesaveAction)
+        self.toolbar.addAction(printAction)
+
 
     def newfile(self):
         global n
@@ -128,10 +149,33 @@ class MyMainWindow(QMainWindow):
             self.statusBar().showMessage("저장됨 : " + filename)
             self.savestate = True
 
-    def components(self):
-        # wg = MyWidget()
-        self.table_widget = MyTableWidget(self)
-        self.setCentralWidget(self.table_widget)
+
+    # 프린터 생성, 실행
+    def Print(self):
+        printer = QPrinter()
+        dlg = QPrintDialog(printer, self)
+        if dlg.exec() == QDialog.Accepted:
+            #Painter 생성
+            qp = QPainter()
+            qp.begin(printer)
+
+            # 여백 비율
+            wgap = printer.pageRect().width() * 0.1
+            hgap = printer.pageRect().height() * 0.1
+
+            # 화면 중앙에 위젯 배치
+            xscale = (printer.pageRect().width() - wgap) / self.table_widget.text2.width()
+            yscale = (printer.pageRect().height() - hgap) / self.table_widget.text2.height()
+            scale = xscale if xscale < yscale else yscale
+            qp.translate(printer.paperRect().x() + printer.pageRect().width() / 2,
+                         printer.paperRect().y() + printer.pageRect().height() / 2)
+            qp.scale(scale, scale);
+            qp.translate(-self.table_widget.text2.width() / 2, -self.table_widget.text2.height() / 2);
+
+            # 인쇄
+            self.text2.render(qp)
+
+            qp.end()
 
 
 if __name__ == '__main__':

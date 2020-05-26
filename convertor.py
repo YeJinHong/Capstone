@@ -81,6 +81,7 @@ def ko_braile_convertor(sentence):
     # result
     return result
 
+
 def convertor(sentence):
     # 어절 분할
     word_list = sentence.split()
