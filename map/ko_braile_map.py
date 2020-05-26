@@ -27,16 +27,19 @@ temp_symbol_B = ["6","8","#","$","0P","&",",8","8'",",0","*","5","\"","_","4","_
 
 temp_number = [0,1,2,3,4,5,6,7,8,9]
 
-temp_number_B = ["#J","#A","#B","#C","#D","#E","#F","#G","#H","#I"]
+temp_number_B = ["J","A","B","C","D","E","F","G","H","I"]
 
 temp_UpperCase = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N",
                   "O","P","Q","R","S","T","U","V","W","X","Y","Z"]
 temp_UpperCase_B=[",A",",B",",C",",D",",E",",F",",G",",H",",I",",J",",K",",L",",M",",N",",O",
                   ",P",",Q",",R",",S",",T",",U",",V",",W",",X",",Y",",Z"]
 
-
 temp_LowerCase=["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"]
 temp_LowerCase_B=["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z" ]
+
+#앞음절-약어 사용, 뒷음절-약어 미사용
+temp_abbreviation_word = ["그래서", "그러나", "그러면", "그러므로", "그런데", "그리고", "그리하여"]
+temp_abbreviation_word_B = ["as", "ac", "a3", "a5", "an", "au", "a:"]
 
 #construct mapping_dict
 map_chosung = defaultdict()
@@ -48,6 +51,8 @@ map_UpperCase = defaultdict()
 map_LowerCase = defaultdict()
 
 map_Symbol = defaultdict()
+
+map_abbreviation_word = defaultdict()
 
 
 
@@ -77,3 +82,5 @@ for idx, low in enumerate(temp_LowerCase):
 for idx, sym in enumerate(temp_symbol):
     map_Symbol[sym] = temp_symbol_B[idx]
 
+for idx, abb in enumerate(temp_abbreviation_word):
+    map_abbreviation_word[abb] = temp_abbreviation_word_B[idx]
