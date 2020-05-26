@@ -85,6 +85,12 @@ class MyMainWindow(QMainWindow):
         printAction.triggered.connect(self.Print)
         filemenu.addAction(printAction)
 
+        #밑줄 기능 삽입
+        underlineAction = QAction(QIcon('img/underline.png'), "밑줄", self)
+        underlineAction.setShortcut('Ctr+U')
+        underlineAction.setStatusTip("밑줄")
+        underlineAction.triggered.connect(self.underline)
+
         #툴바 만들기
         self.statusBar()
 
@@ -92,6 +98,10 @@ class MyMainWindow(QMainWindow):
         self.toolbar.addAction(fileopenAction)
         self.toolbar.addAction(filesaveAction)
         self.toolbar.addAction(printAction)
+
+        #self.toolbar.insertSeparator()
+        self.toolbar.addAction(underlineAction)
+
 
 
     def newfile(self):
@@ -164,18 +174,21 @@ class MyMainWindow(QMainWindow):
             hgap = printer.pageRect().height() * 0.1
 
             # 화면 중앙에 위젯 배치
-            xscale = (printer.pageRect().width() - wgap) / self.table_widget.text2.width()
-            yscale = (printer.pageRect().height() - hgap) / self.table_widget.text2.height()
+            xscale = (printer.pageRect().width() - wgap) / self.table_widget.tab2.text2.width()
+            yscale = (printer.pageRect().height() - hgap) / self.table_widget.tab2.text2.height()
             scale = xscale if xscale < yscale else yscale
             qp.translate(printer.paperRect().x() + printer.pageRect().width() / 2,
                          printer.paperRect().y() + printer.pageRect().height() / 2)
             qp.scale(scale, scale);
-            qp.translate(-self.table_widget.text2.width() / 2, -self.table_widget.text2.height() / 2);
+            qp.translate(-self.table_widget.tab2.text2.width() / 2, -self.table_widget.tab2.text2.height() / 2);
 
             # 인쇄
             self.text2.render(qp)
 
             qp.end()
+
+    def underline(self):
+        self.table_widget.tab2.text1.append("<<u>><</u>>")
 
 
 if __name__ == '__main__':
