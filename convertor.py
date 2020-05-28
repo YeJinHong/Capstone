@@ -36,6 +36,7 @@ def ko_braile_convertor(sentence):
 
     split_keyword_list = list(sentence)  # 원문장 출력부분
 
+    print("음절 분할 어절 : ")
     print(split_keyword_list)
 
     result = list()
@@ -98,34 +99,26 @@ def ko_braile_convertor(sentence):
 
 def convertor(sentence):
     # 어절 분할
+    print("원문장 : "+sentence)
     word_list = sentence.split()
-    print("word: "+word_list)
-    word_result = list()
-    for keyword in word_list:
-        if re.match('["그래서", "그러나", "그러면", "그러므로", "그런데", "그리고", "그리하여"]', keyword) is not None:
-            word_result.append(map_abbreviation[keyword])
+    print("어절 분할 문장: ")
+    print(word_list)
+    temp_list = list()
+    for word in word_list:
+        word_mod = word.replace(word, ko_braile_convertor(word))
+        temp_list.append(word_mod)
+    word_list = temp_list
+    print("convertor 수행 후 : ")
+    print(word_list)
 
-    # 음절 분할
-    split_keyword_list = list(word_list)
-    print("syllable: "+split_keyword_list)
-
-    result = list();
-    for keyword in split_keyword_list:
-        # 한글 여부 check 후 분리
-        if re.match('[가-하]', keyword) is not None:
-                result.append(map_abbreviation[keyword])
-        else:
-            result.append(keyword)
-
-
-    result = "".join(result)
-    result = result.replace(" ", "")
-    result = result.replace("/", " ")
-    return result
+    word_list = "".join(word_list)
+    word_list = word_list.replace(" ", "")
+    word_list = word_list.replace("/", " ")
+    return word_list
 
 
 if __name__ == '__main__':
-    result = convertor("가나다 라마바")
+    result = convertor("그리고 쭈그리고")
     print(result)
 
 
