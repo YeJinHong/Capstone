@@ -22,17 +22,27 @@ Symbol_List=['!','\"','#','$', '%','&','\'','(',')','*','+','-',',','.','/']
 
 Abbreviation_List = ["그래서", "그러나", "그러면", "그러므로", "그런데", "그리고", "그리하여"]
 
+Abb_jungjongsung_List = ["ㅓㄱ", "ㅓㄴ", "ㅓㄹ", "ㅕㄴ", "ㅕㄹ", "ㅕㅇ", "ㅗㄱ",
+                                  "ㅗㄴ", "ㅗㅇ", "ㅜㄴ", "ㅜㄹ", "ㅡㄴ", "ㅡㄹ", "ㅣㄴ", "것"]
+
+Abb_chosung_List = ['가', '까', '나', '다', '따', '라', '마', '바', '빠', '사', '아', '자', '짜', '차', '카', '타', '파', '하']
+
+
 def ko_braile_convertor(sentence):
     sentence = sentence.replace(" ", "/")
     # 어절 단위로 약어 처리
     for word in Abbreviation_List:  # sentence 내용 중 약어 리스트 안에 있는 단어가 있는지
-        index = sentence.find(word)  # sentence 안에 약어가 있다면 그 단어의 인덱스를 저장
-        # 약어 앞에 문장부호나 공백 외의 단어가 있을 경우에는 줄여 쓰지 않으므로 그것을 검사 (ex. 쭈그리고, 찡그리고 등)
-        if index is not -1 and (index == 0 or sentence[index - 1] is "/" or
-                                sentence[index - 1] is '\n' or sentence[index - 1] is "." or
-                                sentence[index - 1] is "," or sentence[index - 1] is "!" or
-                                sentence[index - 1] is "?" or sentence[index - 1] is "~"):
-            sentence = sentence.replace(word, map_abbreviation_word[word])
+        index = -1
+        while True:
+            index = sentence.find(word, index+1)  # sentence 안에 약어가 있다면 그 단어의 첫번째 인덱스를 저장
+            if index == -1:
+                break
+            # 약어 앞에 문장부호나 공백 외의 단어가 있을 경우에는 줄여 쓰지 않으므로 그것을 검사 (ex. 쭈그리고, 찡그리고 등)
+            if (index == 0 or sentence[index - 1] is "/" or
+                    sentence[index - 1] is '\n' or sentence[index - 1] is "." or
+                    sentence[index - 1] is "," or sentence[index - 1] is "!" or
+                    sentence[index - 1] is "?" or sentence[index - 1] is "~"):
+                sentence = sentence.replace(word, map_abbreviation_word[word], 1)
 
     split_keyword_list = list(sentence)  # 원문장 출력부분
 
@@ -47,13 +57,23 @@ def ko_braile_convertor(sentence):
         if re.match('.*[ㄱ-ㅎㅏ-ㅣ가-힣]+.*', keyword) is not None:
             char_code = ord(keyword) - BASE_CODE
             char1 = int(char_code / CHOSUNG)
-            result.append(map_chosung[CHOSUNG_LIST[char1]])
-
             char2 = int((char_code - (CHOSUNG * char1)) / JUNGSUNG)
-            result.append(map_jungsung[JUNGSUNG_LIST[char2]])
-
             char3 = int((char_code - (CHOSUNG * char1) - (JUNGSUNG * char2)))
-            result.append(map_jongsung[JONGSUNG_LIST[char3]])
+            if keyword in ['성', '썽', '정', '쩡', '청']:
+                result.append(map_chosung[CHOSUNG_LIST[char1]])
+                result.append(map_jungjongsung_abbreviation['ㅕㅇ'])
+            elif keyword == '것':
+                result.append(map_jungjongsung_abbreviation[keyword])
+            elif (JUNGSUNG_LIST[char2]+JONGSUNG_LIST[char3]) in Abb_jungjongsung_List:
+                result.append(map_chosung[CHOSUNG_LIST[char1]])
+                result.append(map_jungjongsung_abbreviation[char2+char3])
+            elif (JUNGSUNG_LIST[char2] == 'ㅏ'):
+                result.append(map_abbreviation[Abb_chosung_List[char1]])
+                result.append(map_jongsung[JONGSUNG_LIST[char3]])
+            else:
+                result.append(map_chosung[CHOSUNG_LIST[char1]])
+                result.append(map_jungsung[JUNGSUNG_LIST[char2]])
+                result.append(map_jongsung[JONGSUNG_LIST[char3]])
 
         elif re.match('[0-9]', keyword) is not None:
             if len(split_keyword_list) == 1 or \
@@ -118,7 +138,7 @@ def convertor(sentence):
 
 
 if __name__ == '__main__':
-    result = convertor("그리고 쭈그리고")
+    result = ko_braile_convertor("그리고 쭈그리고")
     print(result)
 
 
