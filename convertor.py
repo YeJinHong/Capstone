@@ -29,7 +29,7 @@ Abb_chosung_List = ['가', '까', '나', '다', '따', '라', '마', '바', '빠
 
 
 def ko_braile_convertor(sentence):
-    sentence = sentence.replace(" ", "/")
+    #sentence = sentence.replace(" ", "/")
     # 어절 단위로 약어 처리
     for word in Abbreviation_List:  # sentence 내용 중 약어 리스트 안에 있는 단어가 있는지
         index = -1
@@ -109,9 +109,8 @@ def ko_braile_convertor(sentence):
 
 
     result = "".join(result)
-    result = result.replace(" ", "")
-    result = result.replace("/", " ")
-
+    #result = result.replace(" ", "")
+    #result = result.replace("/", " ")
 
     # result
     return result
@@ -138,7 +137,7 @@ def convertor(sentence):
 
 
 if __name__ == '__main__':
-    result = ko_braile_convertor("그리고 쭈그리고")
+    result = ko_braile_convertor("가  나다")
     print(result)
 
 
