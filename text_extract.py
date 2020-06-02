@@ -55,7 +55,7 @@ def PdftoText(fileName):
             extracted_text += "".join(text)+"\n"
     if extracted_text == "":  # 빈 텍스트 파일일 경우
         extracted_text = "텍스트를 발견하지 못했습니다."
-    return "여기부터 extracted\n"+extracted_text
+    return extracted_text
 
 # ppt, pptx 파일에만 사용되는 함수
 def PptxtoText(fileName):
