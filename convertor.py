@@ -18,14 +18,13 @@ LowerCase_List=['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p',
 
 UpperCase_List=['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z']
 
-Symbol_List=['!','\"','#','$', '%','&','\'','(',')','*','+','-',',','.','/']
 
 Abbreviation_List = ["그래서", "그러나", "그러면", "그러므로", "그런데", "그리고", "그리하여"]
 
 Abb_jungjongsung_List = ["ㅓㄱ", "ㅓㄴ", "ㅓㄹ", "ㅕㄴ", "ㅕㄹ", "ㅕㅇ", "ㅗㄱ",
-                                  "ㅗㄴ", "ㅗㅇ", "ㅜㄴ", "ㅜㄹ", "ㅡㄴ", "ㅡㄹ", "ㅣㄴ", "것"]
+                                  "ㅗㄴ", "ㅗㅇ", "ㅜㄴ", "ㅜㄹ", 'ㅡㄴ', "ㅡㄹ", "ㅣㄴ", "것"]
 
-Abb_chosung_List = ['가', '까', '나', '다', '따', '라', '마', '바', '빠', '사', '아', '자', '짜', '차', '카', '타', '파', '하']
+Abb_chosung_List = ['가', '까', '나', '다', '따', '라', '마', '바', '빠', '사', '싸', '아', '자', '짜', '차', '카', '타', '파', '하']
 
 
 def ko_braile_convertor(sentence):
@@ -54,7 +53,11 @@ def ko_braile_convertor(sentence):
     for i, keyword in enumerate(split_keyword_list):
 
         # 한글 여부 check 후 분리
-        if re.match('.*[ㄱ-ㅎㅏ-ㅣ가-힣]+.*', keyword) is not None:
+        if re.match('[ㄱ-ㅎ]', keyword) is not None:
+            result.append('='+map_chosung[keyword])
+        elif re.match('[ㅏ-ㅣ]', keyword) is not None:
+            result.append('='+map_jungsung[keyword])
+        elif re.match('[가-힣]', keyword) is not None:
             char_code = ord(keyword) - BASE_CODE
             char1 = int(char_code / CHOSUNG)
             char2 = int((char_code - (CHOSUNG * char1)) / JUNGSUNG)
@@ -66,10 +69,23 @@ def ko_braile_convertor(sentence):
                 result.append(map_jungjongsung_abbreviation[keyword])
             elif (JUNGSUNG_LIST[char2]+JONGSUNG_LIST[char3]) in Abb_jungjongsung_List:
                 result.append(map_chosung[CHOSUNG_LIST[char1]])
-                result.append(map_jungjongsung_abbreviation[char2+char3])
+                result.append(map_jungjongsung_abbreviation[JUNGSUNG_LIST[char2]+JONGSUNG_LIST[char3]])
             elif (JUNGSUNG_LIST[char2] == 'ㅏ'):
                 result.append(map_abbreviation[Abb_chosung_List[char1]])
                 result.append(map_jongsung[JONGSUNG_LIST[char3]])
+            elif CHOSUNG_LIST[char1] == 'ㅇ':
+                result.append(map_jungsung[JUNGSUNG_LIST[char2]])
+                result.append(map_jongsung[JONGSUNG_LIST[char3]])
+            elif JONGSUNG_LIST[char3] == ' ' and re.match('[예-옣]', split_keyword_list[i+1]) is not None:
+                result.append(map_chosung[CHOSUNG_LIST[char1]])
+                result.append(map_jungsung[JUNGSUNG_LIST[char2]])
+                result.append(map_jongsung[JONGSUNG_LIST[char3]])
+                result.append('-')
+            elif JUNGSUNG_LIST[char2] in ['ㅑ', 'ㅘ', 'ㅜ', 'ㅝ'] and re.match('[애-앻]', split_keyword_list[i+1]) is not None:
+                result.append(map_chosung[CHOSUNG_LIST[char1]])
+                result.append(map_jungsung[JUNGSUNG_LIST[char2]])
+                result.append(map_jongsung[JONGSUNG_LIST[char3]])
+                result.append('-')
             else:
                 result.append(map_chosung[CHOSUNG_LIST[char1]])
                 result.append(map_jungsung[JUNGSUNG_LIST[char2]])
@@ -100,9 +116,9 @@ def ko_braile_convertor(sentence):
                     and re.match('#', split_keyword_list[i+1]) is not None:
                 result.append("1")
             else:
-                char_code3=ord(keyword) - Symbol_CODE
-                charS = int(char_code3)
-                result.append(map_Symbol[Symbol_List[charS]])
+                #char_code3=ord(keyword) - Symbol_CODE
+                #charS = int(char_code3)
+                result.append(map_Symbol[keyword])
 
         else:
             result.append(keyword)
@@ -137,8 +153,9 @@ def convertor(sentence):
 
 
 if __name__ == '__main__':
-    result = ko_braile_convertor("가  나다")
+    result = ko_braile_convertor("상점에는 배추, 시금치, 당근과 같은 야채; 미역, 생선, 젓갈 등과 같은 수산물이 있었다.")
     print(result)
+
 
 
 
