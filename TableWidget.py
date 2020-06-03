@@ -52,7 +52,7 @@ class MyTableWidget(QWidget):
     # 텍스트 박스에 있는 내용을 점자로 바꿔 씀
     def WriteBraille(self):
         text = self.tab2.text1.toPlainText()
-        result = convertor.convertor(text)
+        result = convertor.ko_braile_convertor(text)
         self.tab2.text2.setPlainText(result)
         bfont = QFont("Braille from BRL2000", 15)
         self.tab2.text2.setFont(bfont)
