@@ -5,7 +5,6 @@ from PyQt5.QtCore import Qt, pyqtSlot
 from TableWidget import *
 import braille_standard as bs
 
-
 class MyMainWindow(QMainWindow):
     # save와 save as를 구별하기 위함
     # (True:이미 저장된 파일이 있어 거기에 덮어씌우는 경우/False:처음 저장하는 거라 이름을 지정해줘야 하는 경우)
@@ -122,6 +121,7 @@ class MyMainWindow(QMainWindow):
         # 파일 변환 버튼에 접근하여 파일을 불러오고 난 후에 버튼 활성화될 수 있게
         self.table_widget.tab1.btn.setEnabled(True)
         self.table_widget.tab2.btn.setEnabled(True)
+        self.table_widget.tab1.btn_crop.setEnabled(True)
 
     def filesave(self):  # 맨 처음의 저장 (다른 이름으로 저장이랑 같은 기능)
         if not self.savestate:
