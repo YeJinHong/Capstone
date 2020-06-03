@@ -22,7 +22,9 @@ def ImagetoText(fileName):
     # 이미지를 흰색과 검은색으로 임계 전처리
     image_final = cv2.threshold(image, 0, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)[1]
     # tesseract 옵션 설정, 언어:한글 (+세로쓰기 글자에는 Hangul_vert), psm = 3, 띄어쓰기 보완
-    config = "-l kor+eng --oem 1 --psm 3 -c preserve_interword_spaces=1"
+
+    config = "-l script/Hangul --oem 1 --psm 3 -c preserve_interword_spaces=1"
+
     # 텍스트 추출
     extracted_text = image_to_string(image_final, config=config)
     if extracted_text == "":  # 텍스트가 없는 이미지이거나 인식이 안 되는 이미지의 경우
@@ -51,7 +53,8 @@ def PdftoText(fileName):
     extracted_text = ""
     for i in range(0, len(pdf.pages)):
         text = pdf.pages[i].extract_text()
-        extracted_text += "".join(text) + "\n"
+        if type(text) == str:
+            extracted_text += "".join(text)+"\n"
     if extracted_text == "":  # 빈 텍스트 파일일 경우
         extracted_text = "텍스트를 발견하지 못했습니다."
     return extracted_text
