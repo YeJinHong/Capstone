@@ -96,8 +96,8 @@ class MyTableWidget(QWidget):
                         cv2.rectangle(img_draw, (x0, y0), (x, y), (0, 0, 255), 3)
                         temp = cv2.rectangle(img_draw, (x0, y0), (x, y), (0, 0, 255), 3)
                         xy = "(" + str(x0) + "," + str(y0) + ")"
-                        if y0 < 15:
-                            cv2.putText(temp, xy, (x0, y0 + 15), cv2.FONT_HERSHEY_PLAIN, 1.5, (0, 0, 255), 2)
+                        if y0 < 10:
+                            cv2.putText(temp, xy, (x0, y0 + 25), cv2.FONT_HERSHEY_PLAIN, 1.5, (0, 0, 255), 2)
                         else:
                             cv2.putText(temp, xy, (x0, y0 - 15), cv2.FONT_HERSHEY_PLAIN, 1.5, (0, 0, 255), 2)
                         cv2.imshow('Drag to crop image', img_draw)
@@ -106,9 +106,6 @@ class MyTableWidget(QWidget):
                         cv2.moveWindow('Cropped image', 100, 100)
                         cv2.imwrite('./cropped.png', roi)
                         self.cropped_filename = './cropped.png'
-                        '''self.tab1.qPixmapFileVar.load(self.filename)
-                        self.tab1.qPixmapFileVar = self.tab1.qPixmapFileVar.scaledToWidth(400)
-                        self.tab1.label_picture.setPixmap(self.tab1.qPixmapFileVar)'''
                 else:
                     cv2.imshow('Drag to crop image', img)
                     print('drag should start from left-top side')
