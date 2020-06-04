@@ -122,6 +122,7 @@ class MyMainWindow(QMainWindow):
         self.table_widget.tab1.btn.setEnabled(True)
         self.table_widget.tab2.btn.setEnabled(True)
         self.table_widget.tab1.btn_crop.setEnabled(True)
+        self.table_widget.tab1.check.setEnabled(True)
 
     def filesave(self):  # 맨 처음의 저장 (다른 이름으로 저장이랑 같은 기능)
         if not self.savestate:
