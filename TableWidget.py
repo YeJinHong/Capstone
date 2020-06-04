@@ -26,12 +26,20 @@ class MyTableWidget(QWidget):
         self.tab1.btn_crop.setEnabled(False)
         self.tab1.grid.addWidget(self.tab1.btn_crop, 2, 0)
         self.tab1.btn_crop.clicked.connect(self.imageShow)
+        self.tab1.btn_clear.clicked.connect(self.clearText)
         self.tab1.btn_crop.setStatusTip("이미지를 드래그하여 인식하고 싶은 부분만을 인식합니다.")
+        self.tab1.btn_clear.setStatusTip("텍스트 결과창 내의 텍스트를 초기화합니다.")
+        self.tab1.check = QCheckBox('이어쓰기', self)
+        self.tab1.grid.addWidget(self.tab1.check, 0, 1)
+        self.tab1.check.setStatusTip("이어쓰기 모드를 활성화/비활성화합니다.")
+        self.tab1.check.setEnabled(False)
         self.tab2 = MyWidget()
         self.tab2.label1.setText("텍스트 입력창")
         self.tab2.label2.setText("점자 결과창")
         self.tab2.label_picture.setParent(None)
         self.tab2.grid.addWidget(self.tab2.text1, 1, 0)
+        self.tab2.btn_clear.clicked.connect(self.clearBraille)
+        self.tab2.btn_clear.setStatusTip("점자 결과창 내의 점자 텍스트를 초기화합니다.")
         self.tabs.resize(1000, 800)
         self.tabs.addTab(self.tab1, "image -> text")
         self.tabs.addTab(self.tab2, "text -> braille text")
@@ -43,16 +51,29 @@ class MyTableWidget(QWidget):
         self.layout.addWidget(self.tabs)
         self.setLayout(self.layout)
 
+    text = ""
     # 텍스트 박스에 있는 내용을 비우고 다시 씀
     def WriteText(self):
         # 파일로부터 텍스트를 읽어옴
-        if self.cropped_filename != "":
-            text = te.ReturnText(self.cropped_filename)
-        else:
-            text = te.ReturnText(self.filename)
-        # text2 창에 읽어온 텍스트를 출력
-        self.tab1.text2.setPlainText(text)
-        self.tab2.text1.setPlainText(text)
+        if self.tab1.check.isChecked():  # 이어쓰기 모드 활성화
+            if self.cropped_filename != "":
+                self.text += te.ReturnText(self.cropped_filename)
+                self.text += "\n"
+                self.cropped_filename = ""
+            else:
+                self.text += te.ReturnText(self.filename)
+                self.text += "\n\n"
+            # text2 창에 읽어온 텍스트를 출력
+            self.tab1.text2.setPlainText(self.text)
+            self.tab2.text1.setPlainText(self.text)
+        else:  # 이어쓰기 모드 비활성화
+            if self.cropped_filename != "":
+                txt = te.ReturnText(self.cropped_filename)
+            else:
+                txt = te.ReturnText(self.filename)
+            # text2 창에 읽어온 텍스트를 출력
+            self.tab1.text2.setPlainText(txt)
+            self.tab2.text1.setPlainText(txt)
 
     def PreView(self):
         # QPixmap 객체 생성 후 이미지 파일 데이터 로드, Label을 이용하여 화면에 표시
@@ -60,7 +81,6 @@ class MyTableWidget(QWidget):
         self.tab1.qPixmapFileVar.load(self.filename)
         self.tab1.qPixmapFileVar = self.tab1.qPixmapFileVar.scaledToWidth(400)
         self.tab1.label_picture.setPixmap(self.tab1.qPixmapFileVar)
-
 
     # 텍스트 박스에 있는 내용을 점자로 바꿔 씀
     def WriteBraille(self):
@@ -77,6 +97,7 @@ class MyTableWidget(QWidget):
 
         def onMouse(event, x, y, flags, param):
             global isDragging, x0, y0, img
+            height, width, channel = img.shape
             if event == cv2.EVENT_LBUTTONDOWN:
                 isDragging = True
                 x0 = x
@@ -96,10 +117,16 @@ class MyTableWidget(QWidget):
                         cv2.rectangle(img_draw, (x0, y0), (x, y), (0, 0, 255), 3)
                         temp = cv2.rectangle(img_draw, (x0, y0), (x, y), (0, 0, 255), 3)
                         xy = "(" + str(x0) + "," + str(y0) + ")"
-                        if y0 < 10:
+                        xy2 = "(" + str(x) + "," + str(y) + ")"
+                        if y0 < int(height/20*3):
                             cv2.putText(temp, xy, (x0, y0 + 25), cv2.FONT_HERSHEY_PLAIN, 1.5, (0, 0, 255), 2)
+                            cv2.putText(temp, xy2, (x-120, y+25), cv2.FONT_HERSHEY_PLAIN, 1.5, (0, 0, 255), 2)
+                        elif y > int(height/20*17):
+                            cv2.putText(temp, xy, (x0, y0 - 15), cv2.FONT_HERSHEY_PLAIN, 1.5, (0, 0, 255), 2)
+                            cv2.putText(temp, xy2, (x - 120, y - 15), cv2.FONT_HERSHEY_PLAIN, 1.5, (0, 0, 255), 2)
                         else:
                             cv2.putText(temp, xy, (x0, y0 - 15), cv2.FONT_HERSHEY_PLAIN, 1.5, (0, 0, 255), 2)
+                            cv2.putText(temp, xy2, (x-120, y+25), cv2.FONT_HERSHEY_PLAIN, 1.5, (0, 0, 255), 2)
                         cv2.imshow('Drag to crop image', img_draw)
                         roi = img[y0:y0 + h, x0:x0 + w]
                         cv2.imshow('Cropped image', roi)
@@ -112,13 +139,20 @@ class MyTableWidget(QWidget):
 
         img = cv2.imread(self.filename)
         # 원본 이미지가 너무 크면 리사이징?
-        '''height, width, channel = img.shape
+        '''
         if height > 1020 or width > 1680:
             img = cv2.resize(img, (int(width/1.5), int(height/1.5)))'''
         cv2.imshow('Drag to crop image', img)
         cv2.setMouseCallback('Drag to crop image', onMouse)
         cv2.waitKey()
         cv2.destroyAllWindows()
+
+    def clearText(self):
+        self.tab1.text2.setPlainText("")
+        self.tab2.text1.setPlainText("")
+
+    def clearBraille(self):
+        self.tab2.text2.setPlainText("")
 
 class MyWidget(QWidget):
     filename = ""
@@ -133,6 +167,11 @@ class MyWidget(QWidget):
         self.label2.setAlignment(Qt.AlignVCenter)
         # 버튼 - 파일 변환창
         self.btn = QPushButton('파일 변환', self)
+
+        # 결과창 초기화 버튼
+        self.btn_clear = QPushButton('초기화', self)
+
+
 
         # 이미지 출력창
         self.label_picture = QLabel('이미지 출력창', self)
@@ -152,6 +191,7 @@ class MyWidget(QWidget):
         self.grid.addWidget(self.btn, 1, 1)
         self.grid.addWidget(self.label2, 0, 2, Qt.AlignCenter)
         self.grid.addWidget(self.text2, 1, 2)
+        self.grid.addWidget(self.btn_clear, 2, 2)
 
         self.setGeometry(300, 100, 350, 150)
         #self.setWindowTitle("QWidget")
