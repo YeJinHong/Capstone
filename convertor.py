@@ -76,16 +76,18 @@ def ko_braile_convertor(sentence):
             elif CHOSUNG_LIST[char1] == 'ㅇ':
                 result.append(map_jungsung[JUNGSUNG_LIST[char2]])
                 result.append(map_jongsung[JONGSUNG_LIST[char3]])
-            elif JONGSUNG_LIST[char3] == ' ' and re.match('[예-옣]', split_keyword_list[i+1]) is not None:
-                result.append(map_chosung[CHOSUNG_LIST[char1]])
-                result.append(map_jungsung[JUNGSUNG_LIST[char2]])
-                result.append(map_jongsung[JONGSUNG_LIST[char3]])
-                result.append('-')
-            elif JUNGSUNG_LIST[char2] in ['ㅑ', 'ㅘ', 'ㅜ', 'ㅝ'] and re.match('[애-앻]', split_keyword_list[i+1]) is not None:
-                result.append(map_chosung[CHOSUNG_LIST[char1]])
-                result.append(map_jungsung[JUNGSUNG_LIST[char2]])
-                result.append(map_jongsung[JONGSUNG_LIST[char3]])
-                result.append('-')
+            elif JONGSUNG_LIST[char3] == ' ' and i+1 < len(split_keyword_list):
+                if re.match('[예-옣]', split_keyword_list[i+1]) is not None:
+                    result.append(map_chosung[CHOSUNG_LIST[char1]])
+                    result.append(map_jungsung[JUNGSUNG_LIST[char2]])
+                    result.append(map_jongsung[JONGSUNG_LIST[char3]])
+                    result.append('-')
+            elif JUNGSUNG_LIST[char2] in ['ㅑ', 'ㅘ', 'ㅜ', 'ㅝ'] and i < len(split_keyword_list):
+                if re.match('[애-앻]', split_keyword_list[i+1]) is not None:
+                    result.append(map_chosung[CHOSUNG_LIST[char1]])
+                    result.append(map_jungsung[JUNGSUNG_LIST[char2]])
+                    result.append(map_jongsung[JONGSUNG_LIST[char3]])
+                    result.append('-')
             else:
                 result.append(map_chosung[CHOSUNG_LIST[char1]])
                 result.append(map_jungsung[JUNGSUNG_LIST[char2]])
@@ -153,7 +155,7 @@ def convertor(sentence):
 
 
 if __name__ == '__main__':
-    result = ko_braile_convertor("상점에는 배추, 시금치, 당근과 같은 야채; 미역, 생선, 젓갈 등과 같은 수산물이 있었다.")
+    result = ko_braile_convertor("")
     print(result)
 
 
