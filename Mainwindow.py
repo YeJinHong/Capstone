@@ -5,6 +5,9 @@ from PyQt5.QtCore import Qt, pyqtSlot
 from TableWidget import *
 import braille_standard as bs
 
+import re
+import text_extract as te
+
 class MyMainWindow(QMainWindow):
     # save와 save as를 구별하기 위함
     # (True:이미 저장된 파일이 있어 거기에 덮어씌우는 경우/False:처음 저장하는 거라 이름을 지정해줘야 하는 경우)
@@ -15,8 +18,8 @@ class MyMainWindow(QMainWindow):
 
     def __init__(self):
         super().__init__()
-        self.table_widget = MyTableWidget(self)
-        self.setCentralWidget(self.table_widget)
+        self.tabs = MyTableWidget(self)
+        self.setCentralWidget(self.tabs)
         self.toolbar = self.addToolBar('ToolBar')
         self.initUI()
         self.initmenu()
@@ -26,14 +29,7 @@ class MyMainWindow(QMainWindow):
         self.setWindowIcon(QIcon('Aeyeicon.png'))
         self.resize(1000, 800)
         self.statusBar()
-        # self.center()
         self.show()
-
-    def center(self):
-        qr = self.frameGeometry()
-        cp = QDesktopWidget().availableGeometry().center()
-        qr.moveCenter(cp)
-        self.move(qr.topLeft())
 
     def initmenu(self):
         menubar = self.menuBar()
@@ -71,22 +67,22 @@ class MyMainWindow(QMainWindow):
         # filesaveasAction.setEnabled(False)
         filesaveasAction.triggered.connect(self.filesaveas)
         filemenu.addAction(filesaveasAction)
+        # 종료
+        exitAction = QAction(QIcon('img/exit.png'), "종료", self)
+        exitAction.setShortcut('Ctrl+Q')
+        exitAction.setStatusTip('프로그램을 종료합니다.')
+        exitAction.triggered.connect(qApp.quit)
+        filemenu.addAction(exitAction)
         #프린트 버튼
         printAction = QAction(QIcon('img/print.png'), "인쇄", self)
         printAction.setShortcut('Ctrl+P')
         printAction.setStatusTip('점역결과를 프린터합니다.')
         printAction.triggered.connect(self.Print)
         filemenu.addAction(printAction)
-        # 종료
-        exitAction = QAction(QIcon('img/exit.png'), "종료", self)
-        exitAction.setShortcut('Ctrl+Q')
-        exitAction.setStatusTip('프로그램을 종료합니다.')
-        exitAction.triggered.connect(qApp.exit)
-        filemenu.addAction(exitAction)
 
         #밑줄 기능 삽입
         underlineAction = QAction(QIcon('img/underline.png'), "밑줄", self)
-        underlineAction.setShortcut('Ctrl+U')
+        underlineAction.setShortcut('Ctr+U')
         underlineAction.setStatusTip("밑줄")
         underlineAction.triggered.connect(self.underline)
 
@@ -102,6 +98,7 @@ class MyMainWindow(QMainWindow):
         self.toolbar.addAction(underlineAction)
 
 
+
     def newfile(self):
         global n
         n += 1
@@ -110,27 +107,33 @@ class MyMainWindow(QMainWindow):
 
     def fileopen(self):
         fname = QFileDialog.getOpenFileName(self, self.tr("열기"), "",
-                                            self.tr(
-                                                "이미지/문서 파일 (*.jpg *.jpeg *.bmp *.png *.txt *.docx *.pdf *.hwp *.pptx)"))
-        MyTableWidget.filename = fname[0]
+                                            self.tr("이미지 파일 (*.jpg *.jpeg *.bmp *.png);;"
+                                                    "문서 파일 (*.txt *.docx *.pdf *.hwp *.pptx)"))
+        #fname[0]은 파일의 절대경로
+        self.tabs.filename = fname[0]
         if not fname[0] == "":
             self.setWindowTitle(fname[0] + ' - Aeye')
             self.statusBar().showMessage("열림 : " + fname[0])
-        self.table_widget.PreView()
-        # 파일 변환 버튼에 접근하여 파일을 불러오고 난 후에 버튼 활성화될 수 있게
-        self.table_widget.tab1.btn.setEnabled(True)
-        self.table_widget.tab2.btn.setEnabled(True)
-        if fname[0].split(".")[-1] == "png" or fname[0].split(".")[-1] == "jpg" \
-                or fname[0].split(".")[-1] == "jpeg" or fname[0].split(".")[-1] == "bmp":
-            self.table_widget.tab1.btn_crop.setEnabled(True)
-        self.table_widget.tab1.check.setEnabled(True)
 
-    def filesave(self):  # 저장할 파일명을 정하는 다이얼로그가 뜨지 않고 지정된 파일에 덮어씌우는 저장
+        print(fname[0])
+        filetype = te.ReturnFileType(fname[0])
+        if filetype in ["bmp", "jpg", "jpeg", "png"]:  # 이미지 파일인 경우 (필요에 따라 확장자 추가)
+            self.tabs.PreView()
+        elif filetype in ["txt", "docx", "pdf", "pptx", "hwp"]: # 워드 파일인 경우
+            self.tabs.tab1.text2.setPlainText(te.ReturnText(fname[0]))
+
+        # 파일 변환 버튼에 접근하여 파일을 불러오고 난 후에 버튼 활성화될 수 있게
+        self.tabs.tab1.btn.setEnabled(True)
+        self.tabs.tab2.btn.setEnabled(True)
+        self.tabs.tab1.btn_crop.setEnabled(True)
+        self.tabs.tab1.check.setEnabled(True)
+
+    def filesave(self):  # 맨 처음의 저장 (다른 이름으로 저장이랑 같은 기능)
         if not self.savestate:
             self.filesaveas()
         else:
             fname = MyTableWidget.filename
-            brailleText = self.table_widget.tab2.text2.toPlainText()
+            brailleText = self.tabs.tab2.text2.toPlainText()
             pagelist = bs.standard(brailleText)
             if not fname == "":
                 f = open(fname, 'wt', encoding="utf-8")
@@ -140,7 +143,7 @@ class MyMainWindow(QMainWindow):
                 self.statusBar().showMessage("저장됨 : " + fname)
                 self.savestate = True
 
-    def filesaveas(self):  # 맨 처음의 저장 (다른 이름으로 저장이랑 같은 기능)
+    def filesaveas(self):  # 저장할 파일명을 정하는 다이얼로그가 뜨지 않고 지정된 파일에 덮어씌우는 저장
         global count
         fname = QFileDialog.getSaveFileName(self, self.tr("다른 이름으로 저장"), "",
                                             self.tr("출력용 점자 문서 파일 (*.bbf *.brf *.brl)"))
@@ -151,7 +154,7 @@ class MyMainWindow(QMainWindow):
         else:
             filename = fname[0] + ".bbf"
         MyTableWidget.filename = filename
-        brailleText = self.table_widget.tab2.text2.toPlainText()
+        brailleText = self.tabs.tab2.text2.toPlainText()
         pagelist = bs.standard(brailleText)
         if not filename == "":
             f = open(filename, 'wt', encoding="utf-8")
@@ -176,13 +179,13 @@ class MyMainWindow(QMainWindow):
             hgap = printer.pageRect().height() * 0.1
 
             # 화면 중앙에 위젯 배치
-            xscale = (printer.pageRect().width() - wgap) / self.table_widget.tab2.text2.width()
-            yscale = (printer.pageRect().height() - hgap) / self.table_widget.tab2.text2.height()
+            xscale = (printer.pageRect().width() - wgap) / self.tabs.tab2.text2.width()
+            yscale = (printer.pageRect().height() - hgap) / self.tabs.tab2.text2.height()
             scale = xscale if xscale < yscale else yscale
             qp.translate(printer.paperRect().x() + printer.pageRect().width() / 2,
                          printer.paperRect().y() + printer.pageRect().height() / 2)
             qp.scale(scale, scale);
-            qp.translate(-self.table_widget.tab2.text2.width() / 2, -self.table_widget.tab2.text2.height() / 2);
+            qp.translate(-self.tabs.tab2.text2.width() / 2, -self.tabs.tab2.text2.height() / 2);
 
             # 인쇄
             self.text2.render(qp)
@@ -190,7 +193,8 @@ class MyMainWindow(QMainWindow):
             qp.end()
 
     def underline(self):
-        self.table_widget.tab2.text1.append("<<u>><</u>>")
+        self.tabs.tab2.text1.append("<<u>><</u>>")
+
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
