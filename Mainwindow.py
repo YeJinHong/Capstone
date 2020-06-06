@@ -71,22 +71,22 @@ class MyMainWindow(QMainWindow):
         # filesaveasAction.setEnabled(False)
         filesaveasAction.triggered.connect(self.filesaveas)
         filemenu.addAction(filesaveasAction)
-        # 종료
-        exitAction = QAction(QIcon('img/exit.png'), "종료", self)
-        exitAction.setShortcut('Ctrl+Q')
-        exitAction.setStatusTip('프로그램을 종료합니다.')
-        exitAction.triggered.connect(qApp.quit)
-        filemenu.addAction(exitAction)
         #프린트 버튼
         printAction = QAction(QIcon('img/print.png'), "인쇄", self)
         printAction.setShortcut('Ctrl+P')
         printAction.setStatusTip('점역결과를 프린터합니다.')
         printAction.triggered.connect(self.Print)
         filemenu.addAction(printAction)
+        # 종료
+        exitAction = QAction(QIcon('img/exit.png'), "종료", self)
+        exitAction.setShortcut('Ctrl+Q')
+        exitAction.setStatusTip('프로그램을 종료합니다.')
+        exitAction.triggered.connect(qApp.exit)
+        filemenu.addAction(exitAction)
 
         #밑줄 기능 삽입
         underlineAction = QAction(QIcon('img/underline.png'), "밑줄", self)
-        underlineAction.setShortcut('Ctr+U')
+        underlineAction.setShortcut('Ctrl+U')
         underlineAction.setStatusTip("밑줄")
         underlineAction.triggered.connect(self.underline)
 
@@ -100,7 +100,6 @@ class MyMainWindow(QMainWindow):
 
         #self.toolbar.insertSeparator()
         self.toolbar.addAction(underlineAction)
-
 
 
     def newfile(self):
@@ -121,10 +120,12 @@ class MyMainWindow(QMainWindow):
         # 파일 변환 버튼에 접근하여 파일을 불러오고 난 후에 버튼 활성화될 수 있게
         self.table_widget.tab1.btn.setEnabled(True)
         self.table_widget.tab2.btn.setEnabled(True)
-        self.table_widget.tab1.btn_crop.setEnabled(True)
+        if fname[0].split(".")[-1] == "png" or fname[0].split(".")[-1] == "jpg" \
+                or fname[0].split(".")[-1] == "jpeg" or fname[0].split(".")[-1] == "bmp":
+            self.table_widget.tab1.btn_crop.setEnabled(True)
         self.table_widget.tab1.check.setEnabled(True)
 
-    def filesave(self):  # 맨 처음의 저장 (다른 이름으로 저장이랑 같은 기능)
+    def filesave(self):  # 저장할 파일명을 정하는 다이얼로그가 뜨지 않고 지정된 파일에 덮어씌우는 저장
         if not self.savestate:
             self.filesaveas()
         else:
@@ -139,7 +140,7 @@ class MyMainWindow(QMainWindow):
                 self.statusBar().showMessage("저장됨 : " + fname)
                 self.savestate = True
 
-    def filesaveas(self):  # 저장할 파일명을 정하는 다이얼로그가 뜨지 않고 지정된 파일에 덮어씌우는 저장
+    def filesaveas(self):  # 맨 처음의 저장 (다른 이름으로 저장이랑 같은 기능)
         global count
         fname = QFileDialog.getSaveFileName(self, self.tr("다른 이름으로 저장"), "",
                                             self.tr("출력용 점자 문서 파일 (*.bbf *.brf *.brl)"))
@@ -190,7 +191,6 @@ class MyMainWindow(QMainWindow):
 
     def underline(self):
         self.table_widget.tab2.text1.append("<<u>><</u>>")
-
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)

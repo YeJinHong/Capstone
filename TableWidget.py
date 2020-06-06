@@ -56,17 +56,22 @@ class MyTableWidget(QWidget):
     def WriteText(self):
         # 파일로부터 텍스트를 읽어옴
         if self.tab1.check.isChecked():  # 이어쓰기 모드 활성화
+            self.text = self.tab1.text2.toPlainText()
             if self.cropped_filename != "":
-                self.text += te.ReturnText(self.cropped_filename)
-                self.text += "\n"
+                txt = te.ReturnText(self.cropped_filename)
                 self.cropped_filename = ""
             else:
-                self.text += te.ReturnText(self.filename)
-                self.text += "\n\n"
+                txt = te.ReturnText(self.filename)
             # text2 창에 읽어온 텍스트를 출력
-            self.tab1.text2.setPlainText(self.text)
-            self.tab2.text1.setPlainText(self.text)
+            if self.text == "" or self.text == "텍스트를 발견하지 못했습니다." \
+                    or self.text == "변환할 수 없는 파일입니다.\n지원하는 파일 타입은 이미지 파일 또는 텍스트 파일입니다.\n다시 시도해 주십시오.":
+                self.tab1.text2.setPlainText(txt)
+                self.tab2.text1.setPlainText(txt)
+            else:
+                self.tab1.text2.setPlainText(self.text+'\n\n'+txt)
+                self.tab2.text1.setPlainText(self.text+'\n\n'+txt)
         else:  # 이어쓰기 모드 비활성화
+            self.text = ""
             if self.cropped_filename != "":
                 txt = te.ReturnText(self.cropped_filename)
             else:
@@ -131,8 +136,14 @@ class MyTableWidget(QWidget):
                         roi = img[y0:y0 + h, x0:x0 + w]
                         cv2.imshow('Cropped image', roi)
                         cv2.moveWindow('Cropped image', 100, 100)
-                        cv2.imwrite('./cropped.png', roi)
-                        self.cropped_filename = './cropped.png'
+                        message = QMessageBox().question(self, 'Cropped image', xy+', '+xy2+' - 이 이미지로 하시겠습니까?',
+                                                              QMessageBox.Yes | QMessageBox.No, QMessageBox.Yes)
+                        if message == QMessageBox.Yes:
+                            cv2.imwrite('./cropped.png', roi)
+                            self.cropped_filename = './cropped.png'
+                            cv2.destroyWindow('Drag to crop image')
+                        else:
+                            cv2.destroyWindow('Cropped image')
                 else:
                     cv2.imshow('Drag to crop image', img)
                     print('drag should start from left-top side')
