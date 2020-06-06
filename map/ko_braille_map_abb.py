@@ -22,9 +22,14 @@ temp_abbreviation_word_B = ["AS", "AC", "A3", "A5", "AN", "AU", "A:"]
 
 map_abbreviation = defaultdict()
 map_jungjongsung_abbreviation = defaultdict()
+map_abbreviation_word = defaultdict()
+
 
 for idx, abb in enumerate(temp_abbreviation):
     map_abbreviation[abb]=temp_abbreviation_B[idx]
 
 for idx, j_abb in enumerate(temp_abbreviation_jungjongsung):
     map_jungjongsung_abbreviation[j_abb] = temp_abbreviation_jungjongsung_B[idx]
+
+for idx, abb in enumerate(temp_abbreviation_word):
+    map_abbreviation_word[abb] = temp_abbreviation_word_B[idx]

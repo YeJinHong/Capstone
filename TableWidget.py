@@ -6,6 +6,7 @@ from PyQt5.QtGui import *
 
 import text_extract as te
 import convertor
+import TextArea
 
 
 class MyTableWidget(QWidget):
@@ -189,8 +190,6 @@ class MyWidget(QWidget):
         # 결과창 초기화 버튼
         self.btn_clear = QPushButton('초기화', self)
 
-
-
         # 이미지 출력창
         self.label_picture = QLabel('이미지 출력창', self)
         self.label_picture.setFixedWidth(400)
@@ -198,8 +197,10 @@ class MyWidget(QWidget):
         self.label_picture.setAlignment(Qt.AlignCenter)
 
         # 텍스트 출력창
-        self.text1 = QTextEdit()
-        self.text2 = QTextEdit()
+        #self.text1 = QTextEdit()
+        #self.text2 = QTextEdit()
+        self.text1 = TextArea.QCodeEditor()
+        self.text2 = TextArea.QCodeEditor()
 
         self.grid = QGridLayout()
         self.setLayout(self.grid)

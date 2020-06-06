@@ -94,7 +94,7 @@ class MyMainWindow(QMainWindow):
         self.toolbar.addAction(filesaveAction)
         self.toolbar.addAction(printAction)
 
-        #self.toolbar.insertSeparator()
+        self.toolbar.insertSeparator(underlineAction)
         self.toolbar.addAction(underlineAction)
 
 
