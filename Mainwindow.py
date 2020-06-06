@@ -115,7 +115,6 @@ class MyMainWindow(QMainWindow):
             self.setWindowTitle(fname[0] + ' - Aeye')
             self.statusBar().showMessage("열림 : " + fname[0])
 
-        print(fname[0])
         filetype = te.ReturnFileType(fname[0])
         if filetype in ["bmp", "jpg", "jpeg", "png"]:  # 이미지 파일인 경우 (필요에 따라 확장자 추가)
             self.tabs.PreView()
