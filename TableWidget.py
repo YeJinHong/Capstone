@@ -44,7 +44,7 @@ class MyTableWidget(QWidget):
         self.tabs.addTab(self.tab1, "image -> text")
         self.tabs.addTab(self.tab2, "text -> braille text")
         self.tab1.btn.clicked.connect(self.WriteText)
-        self.tab1.btn.setStatusTip("이미지에서 텍스트를 추출합니다.")
+        self.tab1.btn.setStatusTip("이미지 또는 문서 파일에서 텍스트를 추출합니다.")
         self.tab1.btn.setEnabled(False)
         self.tab2.btn.clicked.connect(self.WriteBraille)
         self.tab2.btn.setStatusTip("텍스트를 점자로 변환합니다.")
@@ -115,38 +115,45 @@ class MyTableWidget(QWidget):
             elif event == cv2.EVENT_LBUTTONUP:
                 if isDragging:
                     isDragging = False
-                    w = x - x0
-                    h = y - y0
-                    if w > 0 and h > 0:
-                        img_draw = img.copy()
-                        cv2.rectangle(img_draw, (x0, y0), (x, y), (0, 0, 255), 3)
-                        temp = cv2.rectangle(img_draw, (x0, y0), (x, y), (0, 0, 255), 3)
-                        xy = "(" + str(x0) + "," + str(y0) + ")"
-                        xy2 = "(" + str(x) + "," + str(y) + ")"
-                        if y0 < int(height/20*3):
-                            cv2.putText(temp, xy, (x0, y0 + 25), cv2.FONT_HERSHEY_PLAIN, 1.5, (0, 0, 255), 2)
-                            cv2.putText(temp, xy2, (x-120, y+25), cv2.FONT_HERSHEY_PLAIN, 1.5, (0, 0, 255), 2)
-                        elif y > int(height/20*17):
-                            cv2.putText(temp, xy, (x0, y0 - 15), cv2.FONT_HERSHEY_PLAIN, 1.5, (0, 0, 255), 2)
-                            cv2.putText(temp, xy2, (x - 120, y - 15), cv2.FONT_HERSHEY_PLAIN, 1.5, (0, 0, 255), 2)
-                        else:
-                            cv2.putText(temp, xy, (x0, y0 - 15), cv2.FONT_HERSHEY_PLAIN, 1.5, (0, 0, 255), 2)
-                            cv2.putText(temp, xy2, (x-120, y+25), cv2.FONT_HERSHEY_PLAIN, 1.5, (0, 0, 255), 2)
-                        cv2.imshow('Drag to crop image', img_draw)
-                        roi = img[y0:y0 + h, x0:x0 + w]
-                        cv2.imshow('Cropped image', roi)
-                        cv2.moveWindow('Cropped image', 100, 100)
-                        message = QMessageBox().question(self, 'Cropped image', xy+', '+xy2+' - 이 이미지로 하시겠습니까?',
+                    if x < x0:
+                        t = x
+                        x = x0
+                        x0 = t
+                    if y < y0:
+                        t = y
+                        y = y0
+                        y0 = t
+                    w = abs(x - x0)
+                    h = abs(y - y0)
+                    img_draw = img.copy()
+                    cv2.rectangle(img_draw, (x0, y0), (x, y), (0, 0, 255), 3)
+                    temp = cv2.rectangle(img_draw, (x0, y0), (x, y), (0, 0, 255), 3)
+                    xy = "(" + str(x0) + "," + str(y0) + ")"
+                    xy2 = "(" + str(x) + "," + str(y) + ")"
+                    if y0 < int(height/20*3):
+                        cv2.putText(temp, xy, (x0, y0 + 25), cv2.FONT_HERSHEY_PLAIN, 1.5, (0, 0, 255), 2)
+                        cv2.putText(temp, xy2, (x-120, y+25), cv2.FONT_HERSHEY_PLAIN, 1.5, (0, 0, 255), 2)
+                    elif y > int(height/20*17):
+                        cv2.putText(temp, xy, (x0, y0 - 15), cv2.FONT_HERSHEY_PLAIN, 1.5, (0, 0, 255), 2)
+                        cv2.putText(temp, xy2, (x - 120, y - 15), cv2.FONT_HERSHEY_PLAIN, 1.5, (0, 0, 255), 2)
+                    else:
+                        cv2.putText(temp, xy, (x0, y0 - 15), cv2.FONT_HERSHEY_PLAIN, 1.5, (0, 0, 255), 2)
+                        cv2.putText(temp, xy2, (x-120, y+25), cv2.FONT_HERSHEY_PLAIN, 1.5, (0, 0, 255), 2)
+                    cv2.imshow('Drag to crop image', img_draw)
+                    roi = img[y0:y0 + h, x0:x0 + w]
+                    cv2.imshow('Cropped image', roi)
+                    cv2.moveWindow('Cropped image', 100, 100)
+                    message = QMessageBox().question(self, 'Cropped image', xy+', '+xy2+' - 이 이미지로 하시겠습니까?',
                                                               QMessageBox.Yes | QMessageBox.No, QMessageBox.Yes)
-                        if message == QMessageBox.Yes:
-                            cv2.imwrite('./cropped.png', roi)
-                            self.cropped_filename = './cropped.png'
-                            cv2.destroyWindow('Drag to crop image')
-                        else:
-                            cv2.destroyWindow('Cropped image')
-                else:
-                    cv2.imshow('Drag to crop image', img)
-                    print('drag should start from left-top side')
+                    if message == QMessageBox.Yes:
+                        cv2.imwrite('./cropped.png', roi)
+                        self.cropped_filename = './cropped.png'
+                        cv2.destroyWindow('Drag to crop image')
+                    else:
+                        cv2.destroyWindow('Cropped image')
+            else:
+                cv2.imshow('Drag to crop image', img)
+                print('drag should start from left-top side')
 
         img = cv2.imread(self.filename)
         # 원본 이미지가 너무 크면 리사이징?
