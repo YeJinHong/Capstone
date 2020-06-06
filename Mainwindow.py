@@ -125,7 +125,8 @@ class MyMainWindow(QMainWindow):
         # 파일 변환 버튼에 접근하여 파일을 불러오고 난 후에 버튼 활성화될 수 있게
         self.tabs.tab1.btn.setEnabled(True)
         self.tabs.tab2.btn.setEnabled(True)
-        self.tabs.tab1.btn_crop.setEnabled(True)
+        if filetype in ["bmp", "jpg", "jpeg", "png"]:
+            self.tabs.tab1.btn_crop.setEnabled(True)
         self.tabs.tab1.check.setEnabled(True)
 
     def filesave(self):  # 맨 처음의 저장 (다른 이름으로 저장이랑 같은 기능)
