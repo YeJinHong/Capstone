@@ -78,8 +78,8 @@ def HwptoText(fileName):
     return extracted_text
 
 def ReturnText(fileName):  # switch 문이 없어서 우선 if-else로 작성
-    filetype = fileName.split(".")[-1]
-    filetype = filetype.lower()
+    filetype = ReturnFileType(fileName)
+
     if filetype in ["bmp", "jpg", "jpeg", "png"]:  # 이미지 파일인 경우 (필요에 따라 확장자 추가)
         text = ImagetoText(fileName)
     elif filetype == "txt":  # .txt 파일인 경우
@@ -96,5 +96,13 @@ def ReturnText(fileName):  # switch 문이 없어서 우선 if-else로 작성
         text = "변환할 수 없는 파일입니다.\n지원하는 파일 타입은 이미지 파일 또는 텍스트 파일입니다.\n다시 시도해 주십시오."
     return text
 
+def ReturnFileType(fileName):
+    filetype = fileName.split(".")[-1]
+    filetype = filetype.lower()
+
+    return filetype
+
+
 if __name__ == "__main__":
-    print("this is text_extract.py")
+    print("흰 바람벽이 있어_백석.txt")
+    print(ReturnText("test.txt"))
