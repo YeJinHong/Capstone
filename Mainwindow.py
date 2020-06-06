@@ -1,4 +1,6 @@
 import sys
+
+from PyQt5.QtPrintSupport import QPrinter, QPrintDialog
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import Qt, pyqtSlot
@@ -7,6 +9,7 @@ import braille_standard as bs
 
 import re
 import text_extract as te
+
 
 class MyMainWindow(QMainWindow):
     # save와 save as를 구별하기 위함
@@ -86,6 +89,12 @@ class MyMainWindow(QMainWindow):
         underlineAction.setStatusTip("밑줄")
         underlineAction.triggered.connect(self.underline)
 
+        #점역 기능 삽입
+        convertAction = QAction(QIcon('img/braille.png'), "점역", self)
+        convertAction.setShortcut('Ctrl+B')
+        convertAction.setStatusTip("점역")
+        convertAction.triggered.connect(self.convert)
+
         #툴바 만들기
         self.statusBar()
 
@@ -96,8 +105,7 @@ class MyMainWindow(QMainWindow):
 
         self.toolbar.insertSeparator(underlineAction)
         self.toolbar.addAction(underlineAction)
-
-
+        self.toolbar.addAction(convertAction)
 
     def newfile(self):
         global n
@@ -111,13 +119,15 @@ class MyMainWindow(QMainWindow):
                                                     "문서 파일 (*.txt *.docx *.pdf *.hwp *.pptx)"))
         #fname[0]은 파일의 절대경로
         self.tabs.filename = fname[0]
+        self.tabs.tab1.filename = fname[0]
+
         if not fname[0] == "":
             self.setWindowTitle(fname[0] + ' - Aeye')
             self.statusBar().showMessage("열림 : " + fname[0])
 
         filetype = te.ReturnFileType(fname[0])
         if filetype in ["bmp", "jpg", "jpeg", "png"]:  # 이미지 파일인 경우 (필요에 따라 확장자 추가)
-            self.tabs.PreView()
+            self.tabs.tab1.PreView()
         elif filetype in ["txt", "docx", "pdf", "pptx", "hwp"]: # 워드 파일인 경우
             self.tabs.tab1.label_picture.setText('문서 파일입니다.\n\n파일 변환 버튼을 누르면\n파일의 내용이 텍스트 출력창에 출력됩니다.')
 
@@ -193,7 +203,10 @@ class MyMainWindow(QMainWindow):
             qp.end()
 
     def underline(self):
-        self.tabs.tab2.text1.append("<<u>><</u>>")
+        self.tabs.tab2.text1.appendPlainText("<<u>><</u>>")
+
+    def convert(self):
+        self.tabs.tab2.WriteBraille()
 
 
 if __name__ == '__main__':

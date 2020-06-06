@@ -156,7 +156,7 @@ def convertor(sentence):
 
 
 if __name__ == '__main__':
-    result = ko_braile_convertor("서울서는 이런 개울물을 보지 못하기나 한 듯이. 벌써 며칠째 소녀는, 학교에서 돌아오는 길에 물장난이었다. 그런데, 어제까지 개울 기 에서 하더니, 오늘은 징검다리 한가운데 앉아서 하고 있다.")
+    result = ko_braile_convertor("This is english")
     print(result)
 
 
