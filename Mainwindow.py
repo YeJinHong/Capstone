@@ -67,22 +67,22 @@ class MyMainWindow(QMainWindow):
         # filesaveasAction.setEnabled(False)
         filesaveasAction.triggered.connect(self.filesaveas)
         filemenu.addAction(filesaveasAction)
-        # 종료
-        exitAction = QAction(QIcon('img/exit.png'), "종료", self)
-        exitAction.setShortcut('Ctrl+Q')
-        exitAction.setStatusTip('프로그램을 종료합니다.')
-        exitAction.triggered.connect(qApp.quit)
-        filemenu.addAction(exitAction)
         #프린트 버튼
         printAction = QAction(QIcon('img/print.png'), "인쇄", self)
         printAction.setShortcut('Ctrl+P')
         printAction.setStatusTip('점역결과를 프린터합니다.')
         printAction.triggered.connect(self.Print)
         filemenu.addAction(printAction)
+        # 종료
+        exitAction = QAction(QIcon('img/exit.png'), "종료", self)
+        exitAction.setShortcut('Ctrl+Q')
+        exitAction.setStatusTip('프로그램을 종료합니다.')
+        exitAction.triggered.connect(qApp.quit)
+        filemenu.addAction(exitAction)
 
         #밑줄 기능 삽입
         underlineAction = QAction(QIcon('img/underline.png'), "밑줄", self)
-        underlineAction.setShortcut('Ctr+U')
+        underlineAction.setShortcut('Ctrl+U')
         underlineAction.setStatusTip("밑줄")
         underlineAction.triggered.connect(self.underline)
 
@@ -120,12 +120,13 @@ class MyMainWindow(QMainWindow):
         if filetype in ["bmp", "jpg", "jpeg", "png"]:  # 이미지 파일인 경우 (필요에 따라 확장자 추가)
             self.tabs.PreView()
         elif filetype in ["txt", "docx", "pdf", "pptx", "hwp"]: # 워드 파일인 경우
-            self.tabs.tab1.text2.setPlainText(te.ReturnText(fname[0]))
+            self.tabs.tab1.label_picture.setText('문서 파일입니다.\n\n파일 변환 버튼을 누르면\n파일의 내용이 텍스트 출력창에 출력됩니다.')
 
         # 파일 변환 버튼에 접근하여 파일을 불러오고 난 후에 버튼 활성화될 수 있게
         self.tabs.tab1.btn.setEnabled(True)
         self.tabs.tab2.btn.setEnabled(True)
-        self.tabs.tab1.btn_crop.setEnabled(True)
+        if filetype in ["bmp", "jpg", "jpeg", "png"]:
+            self.tabs.tab1.btn_crop.setEnabled(True)
         self.tabs.tab1.check.setEnabled(True)
 
     def filesave(self):  # 맨 처음의 저장 (다른 이름으로 저장이랑 같은 기능)
