@@ -23,7 +23,7 @@ class MyMainWindow(QMainWindow):
         super().__init__()
         self.tabs = MyTableWidget(self)
         self.setCentralWidget(self.tabs)
-        self.toolbar = self.addToolBar('ToolBar')
+        self.toolbar = self.addToolBar('도구 모음 보기')
         self.initUI()
         self.initmenu()
 
@@ -95,6 +95,11 @@ class MyMainWindow(QMainWindow):
         convertAction.setStatusTip("점역")
         convertAction.triggered.connect(self.convert)
 
+        #메뉴바 토글 액션
+        toggleAction = self.toolbar.toggleViewAction()
+        toggleAction.setStatusTip("툴바 출력/비출력")
+        fileedit.addAction(toggleAction)
+
         #툴바 만들기
         self.statusBar()
 
@@ -106,6 +111,8 @@ class MyMainWindow(QMainWindow):
         self.toolbar.insertSeparator(underlineAction)
         self.toolbar.addAction(underlineAction)
         self.toolbar.addAction(convertAction)
+
+
 
     def newfile(self):
         global n
@@ -207,7 +214,6 @@ class MyMainWindow(QMainWindow):
 
     def convert(self):
         self.tabs.tab2.WriteBraille()
-
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
