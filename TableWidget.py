@@ -8,7 +8,6 @@ from T2Bwidget import T2Bwidget
 
 class MyTableWidget(QWidget):
     filename = ""
-    cropped_filename = ""
 
     def __init__(self, parent):
         super(QWidget, self).__init__(parent)

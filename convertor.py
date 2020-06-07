@@ -119,9 +119,10 @@ def ko_braile_convertor(sentence):
                     and re.match('#', split_keyword_list[i+1]) is not None:
                 result.append("1")
             else:
-                #char_code3=ord(keyword) - Symbol_CODE
-                #charS = int(char_code3)
-                result.append(map_Symbol[keyword])
+                try :
+                    result.append(map_Symbol[keyword])
+                except :
+                    print("symbol List KeyError")
 
         else:
             result.append(keyword)
