@@ -126,6 +126,7 @@ class MyMainWindow(QMainWindow):
         #fname[0]은 파일의 절대경로
         self.tabs.filename = fname[0]
         self.tabs.tab1.filename = fname[0]
+        self.tabs.tab1.cropped = False
 
         if not fname[0] == "":
             self.setWindowTitle(fname[0] + ' - Aeye')

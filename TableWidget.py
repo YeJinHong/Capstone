@@ -18,6 +18,8 @@ class MyTableWidget(QWidget):
         super(QWidget, self).__init__(parent)
         self.layout = QVBoxLayout(self);
 
+
+        self.text = ""
         # 탭 스크린 설정
         self.tabs = QTabWidget()
         self.tab1 = I2TWidget()
@@ -37,7 +39,7 @@ class MyTableWidget(QWidget):
         # 파일로부터 텍스트를 읽어옴
         if self.tab1.check.isChecked():  # 이어쓰기 모드 활성화
             self.text = self.tab1.text2.toPlainText()
-            if self.cropped_filename != "":
+            if self.cropped:
                 txt = te.ReturnText(self.cropped_filename)
                 self.cropped_filename = ""
             else:
@@ -52,7 +54,7 @@ class MyTableWidget(QWidget):
                 self.tab2.text1.setPlainText(self.text+'\n\n'+txt)
         else:  # 이어쓰기 모드 비활성화
             self.text = ""
-            if self.tab1.cropped_filename != "":
+            if self.tab1.cropped:
                 txt = te.ReturnText(self.tab1.cropped_filename)
             else:
                 txt = te.ReturnText(self.filename)

@@ -13,6 +13,8 @@ class I2TWidget(QWidget):
 
         self.filename = ""
         self.cropped_filename = ""
+        self.cropped = False
+
         # 라벨-파일 선택 안내문
         self.label1 = QLabel('파일 입력창', self)
         self.label1.setAlignment(Qt.AlignVCenter)
@@ -114,6 +116,7 @@ class I2TWidget(QWidget):
                         cv2.imwrite('./cropped.png', roi)
                         self.cropped_filename = './cropped.png'
                         cv2.destroyWindow('Drag to crop image')
+                        self.cropped = True
                     else:
                         cv2.destroyWindow('Cropped image')
             else:
