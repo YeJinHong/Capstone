@@ -7,9 +7,6 @@ import TextArea
 from I2Twidget import I2TWidget
 from T2Bwidget import T2Bwidget
 
-import text_extract as te
-
-
 class MyTableWidget(QWidget):
     filename = ""
     cropped_filename = ""
@@ -17,7 +14,6 @@ class MyTableWidget(QWidget):
     def __init__(self, parent):
         super(QWidget, self).__init__(parent)
         self.layout = QVBoxLayout(self);
-
 
         self.text = ""
         # 탭 스크린 설정
@@ -27,12 +23,18 @@ class MyTableWidget(QWidget):
         self.tabs.addTab(self.tab1, "image -> text")
         self.tabs.addTab(self.tab2, "text -> braille text")
 
-        self.tab1.btn.clicked.connect(self.WriteText)
-
         self.tabs.resize(1000, 800)
         self.layout.addWidget(self.tabs)
         self.setLayout(self.layout)
 
+        # tab을 클릭할 시 텍스트 창의 내용 옮겨짐
+        self.tabs.currentChanged.connect(self.setText)
+
+    def setText(self, i):
+        if i == 1:
+            self.tab2.text1.setPlainText(self.tab1.text2.toPlainText())
+        else:
+            self.tab1.text2.setPlainText(self.tab2.text1.toPlainText())
 
     # 텍스트 박스에 있는 내용을 비우고 다시 씀
     def WriteText(self):
