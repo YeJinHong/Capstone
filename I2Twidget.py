@@ -6,11 +6,13 @@ import TextArea
 
 
 class I2TWidget(QWidget):
-    filename = ""
+
 
     def __init__(self):
         super().__init__()
 
+        self.filename = ""
+        self.cropped_filename = ""
         # 라벨-파일 선택 안내문
         self.label1 = QLabel('파일 입력창', self)
         self.label1.setAlignment(Qt.AlignVCenter)

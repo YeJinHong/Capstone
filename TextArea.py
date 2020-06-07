@@ -86,11 +86,4 @@ class QCodeEditor(QPlainTextEdit):
             blockNumber += 1
 
 
-if __name__ == '__main__':
-    import sys
-    from PyQt5.QtWidgets import QApplication
 
-    app = QApplication(sys.argv)
-    codeEditor = QCodeEditor()
-    codeEditor.show()
-    sys.exit(app.exec_())

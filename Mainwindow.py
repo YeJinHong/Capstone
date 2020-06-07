@@ -39,7 +39,6 @@ class MyMainWindow(QMainWindow):
         menubar.setNativeMenuBar(False)
         filemenu = menubar.addMenu('&File')
         fileedit = menubar.addMenu('&Edit')
-        filetranslate = menubar.addMenu('&Translate')
         filedocument = menubar.addMenu('&Document')
 
         # 새로 만들기

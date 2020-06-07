@@ -32,8 +32,6 @@ class MyTableWidget(QWidget):
         self.setLayout(self.layout)
 
 
-    text = ""
-    cropped_filename = ""
     # 텍스트 박스에 있는 내용을 비우고 다시 씀
     def WriteText(self):
         # 파일로부터 텍스트를 읽어옴
@@ -54,8 +52,8 @@ class MyTableWidget(QWidget):
                 self.tab2.text1.setPlainText(self.text+'\n\n'+txt)
         else:  # 이어쓰기 모드 비활성화
             self.text = ""
-            if self.cropped_filename != "":
-                txt = te.ReturnText(self.cropped_filename)
+            if self.tab1.cropped_filename != "":
+                txt = te.ReturnText(self.tab1.cropped_filename)
             else:
                 txt = te.ReturnText(self.filename)
             # text2 창에 읽어온 텍스트를 출력
