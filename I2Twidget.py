@@ -8,7 +8,6 @@ import text_extract as te
 
 class I2TWidget(QWidget):
 
-
     def __init__(self):
         super().__init__()
 
@@ -31,6 +30,7 @@ class I2TWidget(QWidget):
         # 버튼 - 파일 변환창
         self.btn = QPushButton('파일 변환', self)
         self.btn.clicked.connect(self.WriteText)
+
         # 텍스트 출력창
         self.text2 = TextArea.QCodeEditor()
 
@@ -159,10 +159,8 @@ class I2TWidget(QWidget):
             if self.text == "" or self.text == "텍스트를 발견하지 못했습니다." \
                     or self.text == "변환할 수 없는 파일입니다.\n지원하는 파일 타입은 이미지 파일 또는 텍스트 파일입니다.\n다시 시도해 주십시오.":
                 self.text2.setPlainText(txt)
-                #self.tab2.text1.setPlainText(txt)
             else:
                 self.text2.setPlainText(self.text+'\n\n'+txt)
-                #self.tab2.text1.setPlainText(self.text+'\n\n'+txt)
         else:  # 이어쓰기 모드 비활성화
             self.text = ""
             if self.cropped_filename != "":
