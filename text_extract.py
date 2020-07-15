@@ -12,9 +12,9 @@ from pptx import Presentation  # pip install python-pptx
 # 모든 이미지 파일에 사용되는 함수
 def ImagetoText(fileName):
     # 이미지 불러오기
-    image = cv2.imread(fileName)
+    image_final = cv2.imread(fileName)
     # 이미지를 흑백으로 변경
-    image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    image = cv2.cvtColor(image_final, cv2.COLOR_BGR2GRAY)
     # 이미지를 흐릿하게 (가우시안 블러)
     image = cv2.GaussianBlur(image, (3, 3), 0)
     # 이미지의 노이즈 줄이기
