@@ -23,7 +23,7 @@ def ImagetoText(fileName):
     image_final = cv2.threshold(image, 0, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)[1]
     # tesseract 옵션 설정, 언어:한글 (+세로쓰기 글자에는 Hangul_vert), psm = 3, 띄어쓰기 보완
 
-    config = "-l kor+eng --oem 1 --psm 3 -c preserve_interword_spaces=1"
+    config = "-l kor_printed+script/Hangul --oem 1 --psm 3 -c preserve_interword_spaces=1"
 
     # 텍스트 추출
     extracted_text = image_to_string(image_final, config=config)
